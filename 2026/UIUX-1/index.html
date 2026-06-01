@@ -259,6 +259,66 @@
   </main>
 
   <script>
+    // --- 🔊 科幻音效系統 (僅保留圓潤乾淨的點擊音效) ---
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    // 播放點擊音 (太空艙啟動確認音：乾淨俐落、帶有雙重頻率上揚的未來感確認音)
+    function playClickSound() {
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+
+        // 第一重頻率上揚 (基底厚實度)
+        const osc1 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(330, now);
+        osc1.frequency.exponentialRampToValueAtTime(660, now + 0.08);
+
+        gain1.gain.setValueAtTime(0.05, now);
+        gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+
+        osc1.start(now);
+        osc1.stop(now + 0.08);
+
+        // 第二重頻率上揚 (延遲 0.03 秒疊加，創造極富質感的「上揚二重音」)
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(440, now + 0.03);
+        osc2.frequency.exponentialRampToValueAtTime(880, now + 0.11);
+
+        gain2.gain.setValueAtTime(0.04, now + 0.03);
+        gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.11);
+
+        osc2.start(now + 0.03);
+        osc2.stop(now + 0.11);
+      } catch (e) {}
+    }
+
+    // --- 🎮 事件偵聽與點擊音效綁定 (完全移除滑鼠懸停音效邏輯) ---
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.btn')) {
+        playClickSound();
+      }
+    });
+
+    // --- 📝 心理測驗腳本與核心邏輯 ---
     const quizData = {
       questions: [
         {
@@ -285,7 +345,7 @@
           options: [
             { key: "A", text: "A. 行程表魔王：負責把景點、美食、交通轉乘排進 Notion，時程精準、講求動線順暢不繞路。" },
             { key: "B", text: "B. 視覺與打卡擔當：負責搜集最新最美、拍起來最好看的網美咖啡廳或私房景點，確保整趟旅程的視覺質感最高。" },
-            { key: "C", text: "C. 現場神 carry 機動流：懶得看密密麻麻的行程，但到現場時方向感極佳，遇到突發狀況能一秒變出超酷的新點子。" }
+            { key: 'C', text: "C. 現場神 carry 機動流：懶得看密密麻麻的行程，但到現場時方向感極佳，遇到突發狀況能一秒變出超酷的新點子。" }
           ]
         }
       ],
@@ -389,8 +449,6 @@
       score = { A: 0, B: 0, C: 0 };
       selectedHistory = [];
       currentIndex = 0;
-
-      // 回到首頁，而不是直接進入第一題
       showPage('page-home');
     }
 
