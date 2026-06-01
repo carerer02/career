@@ -1,1 +1,826 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚔️ 職涯地下城：解鎖你的「隱藏設計人格」！ | 清大 UI/UX 課程衝刺</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Orbitron & Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #05050a;
+            overflow-x: hidden;
+        }
+        .font-cyber {
+            font-family: 'Orbitron', 'Noto Sans TC', sans-serif;
+        }
+        /* Custom neon shadows for authentic cyberpunk vibe */
+        .neon-shadow-cyan {
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+        }
+        .neon-shadow-pink {
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+        }
+        .neon-shadow-yellow {
+            box-shadow: 0 0 20px rgba(255, 245, 0, 0.6);
+        }
+        .neon-border-cyan {
+            border-color: rgba(0, 242, 254, 0.8);
+        }
+        .neon-border-pink {
+            border-color: rgba(255, 0, 127, 0.8);
+        }
+        /* Glitch text animation effect */
+        .glitch-text {
+            position: relative;
+            animation: glitch 3s infinite;
+        }
+        @keyframes glitch {
+            0% { text-shadow: 2px -1px 0 rgba(0, 242, 254, 0.5), -2px 1px 0 rgba(255, 0, 127, 0.5); }
+            50% { text-shadow: -1px 2px 0 rgba(0, 242, 254, 0.5), 2px -2px 0 rgba(255, 0, 127, 0.5); }
+            100% { text-shadow: 2px -1px 0 rgba(0, 242, 254, 0.5), -2px 1px 0 rgba(255, 0, 127, 0.5); }
+        }
+        /* Page transition effects */
+        .page-fade {
+            transition: all 0.5s ease-in-out;
+        }
+        .glass-panel {
+            background: rgba(15, 17, 26, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen flex flex-col items-center justify-center relative selection:bg-pink-500 selection:text-white">
 
+    <!-- Fullscreen dynamic canvas for 3D digital grid & ambient particles -->
+    <canvas id="bgCanvas" class="fixed top-0 left-0 w-full h-full -z-10 opacity-70"></canvas>
+
+    <!-- Floating Audio Control & Progress bar wrapper -->
+    <div class="fixed top-4 right-4 z-50 flex items-center gap-3">
+        <button id="soundToggle" onclick="toggleSound()" class="glass-panel w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all border border-gray-700 hover:border-cyan-400">
+            <i id="soundIcon" class="fas fa-volume-up"></i>
+        </button>
+    </div>
+
+    <!-- Main Immersive Interactive Box -->
+    <main class="w-full max-w-2xl px-4 py-8 z-10">
+        
+        <!-- PAGE 1: START SCREEN (HOME) -->
+        <div id="page-start" class="page-fade space-y-8 text-center">
+            <!-- RPG Top HUD -->
+            <div class="flex justify-center items-center gap-4 text-xs font-cyber tracking-widest text-cyan-400">
+                <span>HP: 99/99</span>
+                <span class="w-16 h-2 bg-gray-800 rounded-full overflow-hidden border border-cyan-500/30">
+                    <span class="block h-full w-full bg-cyan-400"></span>
+                </span>
+                <span>MP: 99/99</span>
+                <span class="w-16 h-2 bg-gray-800 rounded-full overflow-hidden border border-pink-500/30">
+                    <span class="block h-full w-full bg-pink-400"></span>
+                </span>
+            </div>
+
+            <!-- Main Cyberpunk Shield Badge Logo -->
+            <div class="relative w-40 h-40 mx-auto flex items-center justify-center">
+                <div class="absolute inset-0 bg-gradient-to-tr from-pink-500 to-cyan-500 rounded-full animate-pulse blur-xl opacity-40"></div>
+                <!-- Intertwined neon portal svg -->
+                <svg class="w-32 h-32 text-cyan-400 drop-shadow-[0_0_15px_rgba(0,242,254,0.6)]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="2" stroke-dasharray="10 5" class="animate-[spin_40s_linear_infinite]" />
+                    <circle cx="50" cy="50" r="32" stroke="#FF007F" stroke-width="3" stroke-dasharray="40 10" class="animate-[spin_15s_linear_infinite_reverse]" />
+                    <path d="M50 25 L65 55 L35 55 Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round" class="animate-bounce" />
+                    <path d="M50 75 L35 45 L65 45 Z" stroke="#FF007F" stroke-width="2" stroke-linejoin="round" opacity="0.6" />
+                </svg>
+            </div>
+
+            <!-- Headings -->
+            <div class="space-y-4">
+                <h1 class="text-3xl md:text-4xl font-black font-cyber tracking-tight leading-normal text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-white to-pink-500 glitch-text">
+                    ⚔️ 職涯地下城：<br class="md:hidden">解鎖你的「隱藏設計人格」！
+                </h1>
+                <p class="text-gray-400 text-sm md:text-base max-w-md mx-auto">
+                    30 秒用日常直覺，測出你的產品造物主屬性。<br>
+                    <span class="text-yellow-400 text-xs font-bold font-cyber mt-1 block">★ 清大推廣：UI/UX產業入門應用班 精準測試</span>
+                </p>
+            </div>
+
+            <!-- Start Action Button -->
+            <div class="pt-4">
+                <button onclick="startQuiz()" class="group relative px-8 py-4 bg-yellow-400 text-slate-900 font-black font-cyber rounded-lg text-lg tracking-widest neon-shadow-yellow hover:scale-105 active:scale-95 transition-all">
+                    [ 進入冒險（開始測驗）]
+                    <span class="absolute -top-1 -right-1 w-3 h-3 bg-pink-500 rounded-full animate-ping"></span>
+                </button>
+            </div>
+
+            <!-- Current Registrations Badge -->
+            <div class="text-xs text-gray-500 font-cyber">
+                <i class="fa-solid fa-users text-cyan-400 mr-1"></i> 已有 <span class="text-pink-400 font-bold">41 位</span> 勇者啟程冒險 | 倒數衝刺中
+            </div>
+        </div>
+
+        <!-- PAGE 2, 3, 4: QUIZ SCREENS (DYNAMIC CONTAINER) -->
+        <div id="page-quiz" class="page-fade hidden space-y-6">
+            <!-- Progress & RPG Status Card -->
+            <div class="glass-panel p-4 rounded-xl flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-cyber tracking-widest text-pink-400" id="quizStepText">LV.1 遭遇戰</span>
+                </div>
+                <!-- Dynamic progress bar -->
+                <div class="w-1/2 bg-gray-800 h-2.5 rounded-full overflow-hidden relative">
+                    <div id="progressBar" class="h-full bg-gradient-to-r from-cyan-400 to-pink-500 transition-all duration-300" style="width: 33%"></div>
+                </div>
+                <div class="text-xs font-cyber text-cyan-400" id="progressPercentage">33%</div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="glass-panel p-6 md:p-8 rounded-2xl border-l-4 border-l-cyan-400 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-3 opacity-10">
+                    <i class="fas fa-ghost text-6xl text-cyan-400"></i>
+                </div>
+                <span class="text-cyan-400 font-cyber font-bold text-sm tracking-widest" id="questionNum">STAGE 01</span>
+                <h2 class="text-lg md:text-xl font-bold mt-2 leading-relaxed" id="questionText">載入中...</h2>
+            </div>
+
+            <!-- Options Stack -->
+            <div class="space-y-3" id="optionsContainer">
+                <!-- Option Buttons will be dynamically generated -->
+            </div>
+        </div>
+
+        <!-- PAGE 5, 6, 7: RESULT PAGES -->
+        <div id="page-result" class="page-fade hidden space-y-6">
+            <!-- Celebration Header -->
+            <div class="text-center space-y-2">
+                <div class="text-yellow-400 text-xs font-cyber tracking-widest uppercase">
+                    🏆 UNLOCKED / 隱藏屬性覺醒
+                </div>
+                <h1 class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-pink-400 to-cyan-400" id="resultTitle">
+                    載入分析結果中...
+                </h1>
+            </div>
+
+            <!-- Visual Hexagon Radar & Description Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <!-- Radar Chart Canvas container -->
+                <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center relative">
+                    <span class="text-[10px] font-cyber text-gray-400 absolute top-3 left-3"><i class="fa-solid fa-microchip mr-1"></i> 天賦蜘蛛圖</span>
+                    <canvas id="radarChart" class="w-full max-w-[240px] aspect-square"></canvas>
+                </div>
+
+                <!-- Personality Description Card -->
+                <div class="glass-panel p-6 rounded-2xl h-full flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 bg-pink-500 rounded-full animate-ping"></span>
+                            <h3 class="text-sm font-bold text-pink-400 tracking-wider">人格特質透析</h3>
+                        </div>
+                        <p class="text-sm text-gray-300 leading-relaxed" id="resultDesc">
+                            載入特質中...
+                        </p>
+                    </div>
+                    <div class="border-t border-gray-800 pt-3 mt-4 text-xs text-cyan-400 font-cyber flex justify-between">
+                        <span>職業屬性：<span id="jobType">UX</span></span>
+                        <span>資質評等：<span class="text-yellow-400">★★★★★</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Highly Targeted Pitch Card -->
+            <div class="glass-panel p-6 rounded-2xl border-t-2 border-t-yellow-400 space-y-4">
+                <div class="flex items-center gap-2 text-yellow-400 font-bold text-sm">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span>你的靈魂深度，與這堂課 100% 契合：</span>
+                </div>
+                <p class="text-sm text-gray-300 leading-relaxed" id="resultPitch">
+                    載入推薦中...
+                </p>
+            </div>
+
+            <!-- Urgent Call to Action Widget (FOMO Banner) -->
+            <div class="bg-gradient-to-r from-pink-500/20 via-yellow-500/20 to-cyan-500/20 border border-yellow-400/40 p-5 rounded-2xl text-center space-y-3 relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-24 h-24 bg-yellow-400/10 rounded-full blur-xl"></div>
+                
+                <h4 class="text-sm font-bold text-yellow-400 font-cyber tracking-wider">
+                    ⚠️ 清大生專屬名額倒數衝刺中（僅收2500保證金）
+                </h4>
+                
+                <!-- Countdown Clock Widget -->
+                <div class="flex justify-center items-center gap-2 md:gap-4 py-2 font-cyber">
+                    <div class="bg-slate-950/80 px-3 py-2 rounded border border-gray-800 min-w-[50px]">
+                        <div class="text-xl font-black text-white" id="timer-days">00</div>
+                        <div class="text-[9px] text-gray-500">DAYS</div>
+                    </div>
+                    <div class="text-xl text-yellow-400 animate-pulse">:</div>
+                    <div class="bg-slate-950/80 px-3 py-2 rounded border border-gray-800 min-w-[50px]">
+                        <div class="text-xl font-black text-white" id="timer-hours">00</div>
+                        <div class="text-[9px] text-gray-500">HRS</div>
+                    </div>
+                    <div class="text-xl text-yellow-400 animate-pulse">:</div>
+                    <div class="bg-slate-950/80 px-3 py-2 rounded border border-gray-800 min-w-[50px]">
+                        <div class="text-xl font-black text-white" id="timer-mins">00</div>
+                        <div class="text-[9px] text-gray-500">MINS</div>
+                    </div>
+                    <div class="text-xl text-yellow-400 animate-pulse">:</div>
+                    <div class="bg-slate-950/80 px-3 py-2 rounded border border-gray-800 min-w-[50px]">
+                        <div class="text-xl font-black text-yellow-400" id="timer-secs">00</div>
+                        <div class="text-[9px] text-gray-500">SECS</div>
+                    </div>
+                </div>
+                
+                <p class="text-xs text-gray-400">
+                    報名至 <span class="text-white font-bold">6/8（一）截止</span>，請速領取你的命定設計門票！
+                </p>
+            </div>
+
+            <!-- Double Buttons (Direct Action vs Copy link) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <!-- Apply Button -->
+                <a href="https://ccd.nthu.edu.tw/event/1285" target="_blank" onclick="playSound('win')" class="px-6 py-4 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-black font-cyber rounded-xl text-center text-sm md:text-base tracking-wider neon-shadow-yellow hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rocket animate-bounce"></i> 領取免費名額，立刻報名課程！
+                </a>
+                <!-- Copy/Share Link -->
+                <button onclick="copyLink()" class="px-6 py-4 glass-panel border border-gray-700 hover:border-pink-500 hover:text-pink-400 font-bold rounded-xl text-center text-sm md:text-base tracking-wider hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                    <i class="fa-regular fa-clone"></i> 複製分享冒險傳送門
+                </button>
+            </div>
+
+            <!-- Restart Adventure button -->
+            <div class="text-center pt-2">
+                <button onclick="restartQuiz()" class="text-xs text-gray-500 hover:text-cyan-400 font-cyber underline transition-all">
+                    <i class="fa-solid fa-rotate-left mr-1"></i> 重新探索其他時空路徑
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Custom Toast Alert message -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 glass-panel border-pink-500/40 text-pink-300 px-6 py-3 rounded-xl opacity-0 translate-y-4 pointer-events-none transition-all duration-300 text-sm font-medium z-50 flex items-center gap-2">
+        <i class="fa-solid fa-wand-magic-sparkles text-pink-400"></i>
+        <span id="toastMsg">連結複製成功！</span>
+    </div>
+
+    <script>
+        // Sound toggle state
+        let soundEnabled = true;
+
+        // Custom Synthesized Audio Generator (Web Audio API)
+        // No external audio dependencies! Completely self-contained
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                const ctx = new AudioContext();
+                
+                if (type === 'click') {
+                    // Quick digital tap
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.15);
+                } else if (type === 'start') {
+                    // RPG start fanfare
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(261.63, ctx.currentTime); // C4
+                    osc.frequency.setValueAtTime(329.63, ctx.currentTime + 0.1); // E4
+                    osc.frequency.setValueAtTime(392.00, ctx.currentTime + 0.2); // G4
+                    osc.frequency.exponentialRampToValueAtTime(523.25, ctx.currentTime + 0.3); // C5
+                    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.61);
+                } else if (type === 'next') {
+                    // Next level upgrade noise
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(300, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.26);
+                } else if (type === 'win') {
+                    // High-pitched crystal level up sound
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2); // G5
+                    osc.frequency.setValueAtTime(1046.50, ctx.currentTime + 0.3); // C6
+                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.7);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.71);
+                }
+            } catch (e) {
+                console.log("Audio not supported or blocked by sandbox:", e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const soundIcon = document.getElementById('soundIcon');
+            if (soundEnabled) {
+                soundIcon.className = 'fas fa-volume-up';
+            } else {
+                soundIcon.className = 'fas fa-volume-mute';
+            }
+        }
+
+        // Quiz State Data
+        const quizData = [
+            {
+                step: 1,
+                lvText: "LV.1 遭遇戰",
+                stage: "STAGE 01",
+                question: "Q1. 當你下載了一個新 App，一打開卻發現找不到「關閉廣告」的 X 按鈕時，你的第一反應是？",
+                options: [
+                    { key: 'A', type: 'ux', text: "流程邏輯控：「這動線太不貼心了吧！背後運作邏輯不及格！」" },
+                    { key: 'B', type: 'ui', text: "視覺強迫症：「這個 X 按鈕配色跟背景一模一樣是認真的嗎？好想幫它重新排版...」" },
+                    { key: 'C', type: 'hybrid', text: "點子爆炸狂：「如果這邊改成用雙擊螢幕略過，絕對比現在這個爛設計帥多了！」" }
+                ]
+            },
+            {
+                step: 2,
+                lvText: "LV.2 深淵挑戰",
+                stage: "STAGE 02",
+                question: "Q2. 跟朋友約聚餐，在用手機看網頁菜單時，你最無法忍受哪件事情？",
+                options: [
+                    { key: 'A', type: 'ux', text: "(A) 數據混亂派：菜單沒有分類，價格和品項混在一起，點個餐還要上下比對、算價錢，超級沒效率。" },
+                    { key: 'B', type: 'ui', text: "(B) 畫面崩壞派：圖片加載不出來、排版字體跑位、食物照片拍得很醜，讓人瞬間失去食慾。" },
+                    { key: 'C', type: 'hybrid', text: "(C) 操作卡頓派：點按鈕沒反應、跳轉超慢，想放大看一下內容還會整頁死機。" }
+                ]
+            },
+            {
+                step: 3,
+                lvText: "LV.MAX 命運抉擇",
+                stage: "STAGE 03",
+                question: "Q3. 終於要和朋友出國畢業旅行了！在出發前規劃行程時，你通常扮演什麼樣的角色？",
+                options: [
+                    { key: 'A', type: 'ux', text: "🛡️ 行程表魔王：負責把景點、美食、交通轉乘排進 Notion，時程精準、講求動線順暢不繞路。" },
+                    { key: 'B', type: 'ui', text: "🔮 視覺與打卡擔當：負責搜集最新最美、拍起來最好看的網美咖啡廳或私房景點，確保整趟旅程的視覺質感最高。" },
+                    { key: 'C', type: 'hybrid', text: "⚡ 現場神 carry 機動流：懶得看密密麻麻的行程，但到現場時方向感極佳，遇到突發狀況能一秒變出超酷的新點子。" }
+                ]
+            }
+        ];
+
+        // Outcomes Profile Content
+        const outcomes = {
+            ux: {
+                title: "🏆 邏輯爆棚體驗大師（UX 潛力股）",
+                desc: "你擁有超強的同理心與邏輯思維！你排旅程重視的「動線流暢」、看 App 重視的「運作邏輯」，正是設計一款好用產品必備的 UX 核心能力。你擅長為複雜的流程架構出最絲滑的路徑！",
+                pitch: "你的特質跟清大 UI/UX 班的【UX 使用者研究與設計思維】完美適配！今年課程首度結合 AI 實作，教你用 AI 像排旅遊動線一樣，絲滑地梳理產品邏輯！",
+                radar: { empathy: 95, logic: 98, strategy: 88, execution: 70, creativity: 60, aesthetics: 55 },
+                jobType: "UX User Experience Designer",
+                canvasTheme: "cyan"
+            },
+            ui: {
+                title: "🏆 直覺美感流大師（UI 潛力股）",
+                desc: "你對美感、排版、視覺氛圍有著極度敏銳的雷達！你挑選的打卡景點絕對是視覺焦點。你天生就知道怎麼用視覺包裝去打中人心，是把數位產品變漂亮的「畫面魔術師」。",
+                pitch: "你的特質跟清大 UI/UX 班的【Figma UI 設計工具實作】完美適配！今年課程首度結合 AI 工具，教你如何用 AI 快速捕捉頂級排版與配色靈感，把你的美感轉化為業界高產值技能！無理工或寫程式背景也能輕鬆上手！",
+                radar: { empathy: 75, logic: 58, strategy: 50, execution: 82, creativity: 92, aesthetics: 98 },
+                jobType: "UI User Interface Designer",
+                canvasTheme: "pink"
+            },
+            hybrid: {
+                title: "🏆 突破框架產品發明家（UI/UX全能雙棲）",
+                desc: "你腦袋裡充滿彈性與各種點子，既能在現場帶給夥伴完美的體驗（UX），又熱愛生活中各種精美的新鮮事物（UI）！你是能在未知環境中創造驚喜的「全能產品造物主」。",
+                pitch: "你的特質跟清大 UI/UX 班的【App/Web Redesign 小組專題與成果發表】完美適配！這門課能讓你從零到有跟夥伴一起做出屬於自己的求職作品集，還能學到最新 AI 輔助設計流程！",
+                radar: { empathy: 88, logic: 85, strategy: 92, execution: 85, creativity: 90, aesthetics: 82 },
+                jobType: "Product Designer / Manager",
+                canvasTheme: "rainbow"
+            }
+        };
+
+        // Game state variables
+        let currentQuizIndex = 0;
+        let scoreCounter = { ux: 0, ui: 0, hybrid: 0 };
+        let activeCanvasTheme = "default"; // "default", "cyan", "pink", "rainbow"
+
+        // Canvas setup & animation logic
+        const canvas = document.getElementById('bgCanvas');
+        const gl = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        const particles = [];
+        const gridLines = [];
+        const gridSpeed = 1.2;
+        let gridOffset = 0;
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initGrid();
+        });
+
+        // Initialize 3D-like grid lines
+        function initGrid() {
+            gridLines.length = 0;
+            // Vertical perspective lines
+            const lineCount = 16;
+            for (let i = 0; i <= lineCount; i++) {
+                gridLines.push({
+                    startPct: i / lineCount
+                });
+            }
+        }
+
+        // Particle class
+        class Particle {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * height;
+            }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = height + 10;
+                this.speed = 0.5 + Math.random() * 1.5;
+                this.size = 1 + Math.random() * 3;
+                this.alpha = 0.1 + Math.random() * 0.5;
+            }
+            update() {
+                this.y -= this.speed;
+                if (this.y < -10) {
+                    this.reset();
+                }
+            }
+            draw() {
+                let color = 'rgba(0, 242, 254, ' + this.alpha + ')'; // Cyan default
+                if (activeCanvasTheme === 'pink') {
+                    color = 'rgba(255, 0, 127, ' + this.alpha + ')';
+                } else if (activeCanvasTheme === 'rainbow') {
+                    const h = (Date.now() / 20) % 360;
+                    color = `hsla(${h}, 80%, 60%, ${this.alpha})`;
+                } else if (activeCanvasTheme === 'default') {
+                    color = 'rgba(120, 80, 255, ' + this.alpha * 0.6 + ')';
+                }
+                gl.fillStyle = color;
+                gl.beginPath();
+                gl.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                gl.fill();
+            }
+        }
+
+        // Generate particles
+        for (let i = 0; i < 60; i++) {
+            particles.push(new Particle());
+        }
+        initGrid();
+
+        // Main animation loop
+        function drawScene() {
+            gl.fillStyle = 'rgba(5, 5, 10, 0.2)'; // trail effect
+            gl.fillRect(0, 0, width, height);
+
+            // Draw futuristic moving perspective grid at the bottom
+            const horizon = height * 0.45;
+            gridOffset = (gridOffset + gridSpeed) % 40;
+
+            let strokeColor = 'rgba(0, 242, 254, 0.1)';
+            if (activeCanvasTheme === 'pink') strokeColor = 'rgba(255, 0, 127, 0.1)';
+            else if (activeCanvasTheme === 'rainbow') strokeColor = 'rgba(255, 245, 0, 0.12)';
+            else if (activeCanvasTheme === 'default') strokeColor = 'rgba(120, 80, 255, 0.08)';
+
+            gl.strokeStyle = strokeColor;
+            gl.lineWidth = 1;
+
+            // Perspective vertical grid lines
+            gridLines.forEach(line => {
+                gl.beginPath();
+                // Bottom end of screen x
+                const bX = line.startPct * width;
+                // Vanishing point target (center horizon)
+                const vX = width / 2 + (line.startPct - 0.5) * (width * 0.1);
+                gl.moveTo(vX, horizon);
+                gl.lineTo(bX, height);
+                gl.stroke();
+            });
+
+            // Horizontal grid lines
+            for (let y = horizon; y < height; y += 30) {
+                const step = (y - horizon) / (height - horizon);
+                // Adjust position by speed offset to simulate forward motion
+                const curveY = horizon + Math.pow(step, 1.8) * (height - horizon) + gridOffset * step;
+                if (curveY < height) {
+                    gl.beginPath();
+                    gl.moveTo(0, curveY);
+                    gl.lineTo(width, curveY);
+                    gl.stroke();
+                }
+            }
+
+            // Draw glowing scanlines for retro arcade screen look
+            gl.fillStyle = 'rgba(255, 255, 255, 0.015)';
+            for (let y = 0; y < height; y += 4) {
+                gl.fillRect(0, y, width, 1.5);
+            }
+
+            // Update & Draw particles
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(drawScene);
+        }
+
+        // Start BG render on window load
+        window.onload = function() {
+            drawScene();
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        };
+
+        // Screen Routing and Actions
+        function startQuiz() {
+            playSound('start');
+            document.getElementById('page-start').classList.add('hidden');
+            document.getElementById('page-quiz').classList.remove('hidden');
+            currentQuizIndex = 0;
+            scoreCounter = { ux: 0, ui: 0, hybrid: 0 };
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const data = quizData[currentQuizIndex];
+            
+            // Progress Bar & Level text updates
+            document.getElementById('quizStepText').innerText = data.lvText;
+            document.getElementById('questionNum').innerText = data.stage;
+            document.getElementById('questionText').innerText = data.question;
+            
+            const percentage = Math.round(((currentQuizIndex) / quizData.length) * 100) || 33;
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressPercentage').innerText = percentage + '%';
+
+            // Render Dynamic Answers
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = ''; // clear
+
+            data.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left glass-panel p-4 rounded-xl hover:bg-slate-900 border border-gray-800 hover:border-cyan-400 hover:translate-x-1 active:translate-x-0 transition-all font-medium text-sm md:text-base text-gray-200 flex items-start gap-3 group relative overflow-hidden";
+                btn.innerHTML = `
+                    <span class="w-6 h-6 bg-cyan-900/40 text-cyan-400 border border-cyan-500/30 rounded flex items-center justify-center font-cyber text-xs flex-shrink-0 group-hover:bg-cyan-400 group-hover:text-slate-950 transition-all">${opt.key}</span>
+                    <span>${opt.text}</span>
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-cyan-400">
+                        <i class="fa-solid fa-angles-right animate-pulse"></i>
+                    </span>
+                `;
+                btn.onclick = () => selectOption(opt.type);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectOption(type) {
+            playSound('click');
+            // Log score
+            scoreCounter[type]++;
+            
+            currentQuizIndex++;
+            if (currentQuizIndex < quizData.length) {
+                // Flash visual to show switch
+                document.getElementById('page-quiz').classList.add('opacity-50');
+                setTimeout(() => {
+                    renderQuestion();
+                    document.getElementById('page-quiz').classList.remove('opacity-50');
+                }, 150);
+            } else {
+                calculateAndShowResult();
+            }
+        }
+
+        // Result assessment
+        function calculateAndShowResult() {
+            playSound('win');
+            document.getElementById('page-quiz').classList.add('hidden');
+            document.getElementById('page-result').classList.remove('hidden');
+
+            // Find highest score category
+            let winner = 'hybrid';
+            if (scoreCounter.ux > scoreCounter.ui && scoreCounter.ux >= scoreCounter.hybrid) {
+                winner = 'ux';
+            } else if (scoreCounter.ui > scoreCounter.ux && scoreCounter.ui >= scoreCounter.hybrid) {
+                winner = 'ui';
+            } else if (scoreCounter.hybrid > scoreCounter.ux && scoreCounter.hybrid > scoreCounter.ui) {
+                winner = 'hybrid';
+            } else {
+                // If draw, assign based on Q3 pick (latest chosen)
+                winner = 'hybrid'; 
+            }
+
+            const data = outcomes[winner];
+            activeCanvasTheme = data.canvasTheme; // update global background style!
+
+            // Fill text blocks
+            document.getElementById('resultTitle').innerText = data.title;
+            document.getElementById('resultDesc').innerText = data.desc;
+            document.getElementById('resultPitch').innerText = data.pitch;
+            document.getElementById('jobType').innerText = data.jobType;
+
+            // Dynamic Hexagon Radar Chart Generation
+            const radarCanvas = document.getElementById('radarChart');
+            const rc = radarCanvas.getContext('2d');
+            
+            // Adjust canvas high density logic
+            const size = 300;
+            radarCanvas.width = size;
+            radarCanvas.height = size;
+            
+            // Render Radar parameters
+            const labels = ["同理心", "邏輯力", "美感度", "創意力", "執行力", "策略力"];
+            const maxVal = 100;
+            const values = [data.radar.empathy, data.radar.logic, data.radar.aesthetics, data.radar.creativity, data.radar.execution, data.radar.strategy];
+            
+            // Animation values mapping
+            let currentAnimScale = 0;
+            
+            function drawRadar() {
+                rc.clearRect(0, 0, size, size);
+                const cx = size / 2;
+                const cy = size / 2;
+                const r = size * 0.35;
+                const sides = labels.length;
+
+                // 1. Draw pentagram/hexagon concentric support lines
+                rc.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+                rc.lineWidth = 1;
+                for (let level = 1; level <= 4; level++) {
+                    const currentRadius = r * (level / 4);
+                    rc.beginPath();
+                    for (let i = 0; i < sides; i++) {
+                        const angle = (Math.PI * 2 / sides) * i - Math.PI / 2;
+                        const x = cx + currentRadius * Math.cos(angle);
+                        const y = cy + currentRadius * Math.sin(angle);
+                        if (i === 0) rc.moveTo(x, y);
+                        else rc.lineTo(x, y);
+                    }
+                    rc.closePath();
+                    rc.stroke();
+                }
+
+                // 2. Draw axis lines
+                rc.beginPath();
+                for (let i = 0; i < sides; i++) {
+                    const angle = (Math.PI * 2 / sides) * i - Math.PI / 2;
+                    rc.moveTo(cx, cy);
+                    rc.lineTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle));
+                }
+                rc.stroke();
+
+                // 3. Draw Labels text
+                rc.fillStyle = '#a0aec0';
+                rc.font = 'bold 11px "Noto Sans TC", sans-serif';
+                rc.textAlign = 'center';
+                rc.textBaseline = 'middle';
+                const padding = 18;
+                for (let i = 0; i < sides; i++) {
+                    const angle = (Math.PI * 2 / sides) * i - Math.PI / 2;
+                    const x = cx + (r + padding) * Math.cos(angle);
+                    const y = cy + (r + padding) * Math.sin(angle);
+                    rc.fillText(labels[i], x, y);
+                }
+
+                // 4. Draw Animated Area Polygon
+                const glowTheme = winner === 'ux' ? 'rgba(0, 242, 254, 0.4)' : (winner === 'ui' ? 'rgba(255, 0, 127, 0.4)' : 'rgba(255, 245, 0, 0.35)');
+                const borderTheme = winner === 'ux' ? '#00F2FE' : (winner === 'ui' ? '#FF007F' : '#FFF500');
+
+                rc.beginPath();
+                for (let i = 0; i < sides; i++) {
+                    const angle = (Math.PI * 2 / sides) * i - Math.PI / 2;
+                    const currentVal = values[i] * currentAnimScale;
+                    const radLength = (currentVal / maxVal) * r;
+                    const x = cx + radLength * Math.cos(angle);
+                    const y = cy + radLength * Math.sin(angle);
+                    if (i === 0) rc.moveTo(x, y);
+                    else rc.lineTo(x, y);
+                }
+                rc.closePath();
+                rc.fillStyle = glowTheme;
+                rc.fill();
+                rc.strokeStyle = borderTheme;
+                rc.lineWidth = 2.5;
+                rc.stroke();
+
+                // Draw dots on corners
+                for (let i = 0; i < sides; i++) {
+                    const angle = (Math.PI * 2 / sides) * i - Math.PI / 2;
+                    const currentVal = values[i] * currentAnimScale;
+                    const radLength = (currentVal / maxVal) * r;
+                    rc.beginPath();
+                    rc.arc(cx + radLength * Math.cos(angle), cy + radLength * Math.sin(angle), 4, 0, Math.PI * 2);
+                    rc.fillStyle = '#ffffff';
+                    rc.fill();
+                    rc.strokeStyle = borderTheme;
+                    rc.stroke();
+                }
+
+                // Smooth growth animation
+                if (currentAnimScale < 1) {
+                    currentAnimScale += 0.04;
+                    requestAnimationFrame(drawRadar);
+                }
+            }
+
+            // Fire off radar canvas graph rendering
+            drawRadar();
+        }
+
+        // Countdown timer utility (June 8, 2026 Deadline countdown)
+        function updateCountdown() {
+            // Target Date: June 8, 2026
+            const target = new Date("June 8, 2026 23:59:59").getTime();
+            const now = new Date().getTime();
+            const difference = target - now;
+
+            if (difference < 0) {
+                // If passed (just display zeroed states)
+                document.getElementById('timer-days').innerText = '00';
+                document.getElementById('timer-hours').innerText = '00';
+                document.getElementById('timer-mins').innerText = '00';
+                document.getElementById('timer-secs').innerText = '00';
+                return;
+            }
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('timer-days').innerText = String(days).padStart(2, '0');
+            document.getElementById('timer-hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('timer-mins').innerText = String(mins).padStart(2, '0');
+            document.getElementById('timer-secs').innerText = String(secs).padStart(2, '0');
+        }
+
+        // Copy Sharing link implementation
+        function copyLink() {
+            playSound('click');
+            const url = window.location.href;
+            
+            // Create a temp element for copying (highly compatible fallback inside iframe sandbox context)
+            const input = document.createElement('textarea');
+            input.value = url;
+            document.body.appendChild(input);
+            input.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast("冒險傳送連結已複製！分享給朋友吧 🚀");
+                } else {
+                    showToast("複製失敗，請手動複製網址喔！");
+                }
+            } catch (err) {
+                showToast("複製失敗，請手動複製網址喔！");
+            }
+            document.body.removeChild(input);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 3000);
+        }
+
+        // Restart flow
+        function restartQuiz() {
+            playSound('click');
+            activeCanvasTheme = "default";
+            document.getElementById('page-result').classList.add('hidden');
+            document.getElementById('page-start').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
