@@ -1,1 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>解鎖你的「隱藏設計人格」</title>
 
+  <style>
+    :root {
+      --neon-cyan: #00f3ff;
+      --neon-pink: #ff00ff;
+      --neon-green: #39ff14;
+      --bg-color: #0b0c10;
+      --panel-bg: rgba(17, 24, 39, 0.88);
+      --text-main: #ffffff;
+      --text-muted: #d1d5db;
+      --border-dark: rgba(255,255,255,.14);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      background: transparent;
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body {
+      line-height: 1.7;
+    }
+
+    .quiz-shell {
+      width: 100%;
+      padding: 12px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(0, 243, 255, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 50% 100%, rgba(255, 0, 255, 0.10) 0%, transparent 45%),
+        var(--bg-color);
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 980px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn .28s ease both;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel {
+      width: 100%;
+      border-radius: 18px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 243, 255, 0.5);
+      box-shadow: 0 0 18px rgba(0, 243, 255, 0.26), inset 0 0 14px rgba(0, 243, 255, 0.16);
+      padding: clamp(22px, 5vw, 54px);
+      position: relative;
+      overflow: visible;
+    }
+
+    .panel.pink {
+      border-color: rgba(255, 0, 255, 0.5);
+      box-shadow: 0 0 18px rgba(255, 0, 255, 0.26), inset 0 0 14px rgba(255, 0, 255, 0.14);
+    }
+
+    .panel.green {
+      border-color: rgba(57, 255, 20, 0.5);
+      box-shadow: 0 0 18px rgba(57, 255, 20, 0.24), inset 0 0 14px rgba(57, 255, 20, 0.12);
+    }
+
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,.10) 50%, rgba(0,0,0,.10));
+      background-size: 100% 4px;
+      pointer-events: none;
+      border-radius: inherit;
+      opacity: .25;
+    }
+
+    .home-panel {
+      text-align: center;
+      padding-top: clamp(24px, 5vw, 56px);
+      padding-bottom: clamp(24px, 5vw, 56px);
+    }
+
+    .lock-icon {
+      font-size: clamp(54px, 10vw, 86px);
+      line-height: 1;
+      margin-bottom: clamp(18px, 3vw, 30px);
+      filter: drop-shadow(0 0 16px var(--neon-cyan));
+    }
+
+    .home-title {
+      font-size: clamp(23px, 4.5vw, 36px);
+      line-height: 1.35;
+      font-weight: 900;
+      margin-bottom: clamp(14px, 3vw, 24px);
+      letter-spacing: .03em;
+    }
+
+    .home-desc {
+      color: var(--text-muted);
+      font-size: clamp(16px, 2.8vw, 22px);
+      line-height: 1.8;
+      margin: 0 auto clamp(26px, 4vw, 42px);
+      max-width: 660px;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid rgba(255,255,255,.16);
+      padding-bottom: 16px;
+      margin-bottom: clamp(22px, 4vw, 36px);
+    }
+
+    .progress {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: clamp(22px, 4vw, 34px);
+      color: var(--neon-pink);
+      font-weight: 900;
+      text-shadow: 0 0 12px var(--neon-pink);
+    }
+
+    .stage {
+      color: #9ca3af;
+      font-size: clamp(13px, 2vw, 18px);
+      white-space: nowrap;
+    }
+
+    .question-title {
+      font-size: clamp(15px, 2.7vw, 23px);
+      line-height: 1.6;
+      font-weight: 900;
+      margin-bottom: clamp(20px, 4vw, 36px);
+    }
+
+    .options {
+      display: grid;
+      gap: clamp(12px, 2.4vw, 18px);
+      width: 100%;
+    }
+
+    .option-btn,
+    .main-btn,
+    .back-btn,
+    .restart-btn,
+    .cta-link {
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+      font-family: inherit;
+    }
+
+    .main-btn {
+      width: min(100%, 560px);
+      min-height: 58px;
+      padding: 16px 22px;
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(0, 243, 255, 0.65);
+      box-shadow: 0 0 15px rgba(0, 243, 255, .28), inset 0 0 10px rgba(0, 243, 255, .16);
+      font-size: clamp(18px, 3vw, 26px);
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+
+    .main-btn:hover,
+    .main-btn:focus-visible {
+      background: rgba(0, 243, 255, .10);
+      box-shadow: 0 0 26px rgba(0, 243, 255, .5);
+      transform: translateY(-1px);
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      padding: clamp(15px, 2.6vw, 22px);
+      border: 1px solid #374151;
+      background: rgba(31, 41, 55, .52);
+      color: #fff;
+      font-size: clamp(15px, 2.4vw, 19px);
+      line-height: 1.75;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(0,0,0,.16);
+    }
+
+    .option-btn:hover,
+    .option-btn:focus-visible {
+      border-color: var(--neon-pink);
+      background: rgba(255, 0, 255, .07);
+      box-shadow: 0 0 16px rgba(255, 0, 255, .22);
+      transform: translateX(4px);
+    }
+
+    .nav-row {
+      margin-top: clamp(18px, 3vw, 28px);
+      text-align: center;
+    }
+
+    .back-btn {
+      width: min(100%, 240px);
+      padding: 12px 16px;
+      background: transparent;
+      color: #bfc5cf;
+      border: 1px solid rgba(255,255,255,.18);
+      font-size: clamp(14px, 2.2vw, 17px);
+      font-weight: 800;
+    }
+
+    .back-btn:hover {
+      color: #fff;
+      background: rgba(255,255,255,.08);
+    }
+
+    .result-head {
+      text-align: center;
+      margin-bottom: clamp(16px, 3vw, 26px);
+    }
+
+    .result-icon {
+      font-size: clamp(42px, 7vw, 64px);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .result-title {
+      font-size: clamp(25px, 5vw, 44px);
+      line-height: 1.45;
+      font-weight: 900;
+      color: var(--neon-green);
+      text-shadow: 0 0 12px currentColor;
+    }
+
+    .result-title.cyan { color: var(--neon-cyan); }
+    .result-title.pink { color: var(--neon-pink); }
+    .result-title.green { color: var(--neon-green); }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(14px, 2.6vw, 24px);
+      margin-bottom: clamp(18px, 3vw, 28px);
+    }
+
+    .info-box {
+      background: rgba(0,0,0,.46);
+      border: 1px solid var(--border-dark);
+      border-radius: 16px;
+      padding: clamp(16px, 2.8vw, 26px);
+    }
+
+    .info-title {
+      font-size: clamp(17px, 2.6vw, 22px);
+      font-weight: 900;
+      margin-bottom: 12px;
+      padding-left: 12px;
+      border-left: 6px solid;
+    }
+
+    .info-title.cyan {
+      color: var(--neon-cyan);
+      border-left-color: var(--neon-cyan);
+    }
+
+    .info-title.pink {
+      color: var(--neon-pink);
+      border-left-color: var(--neon-pink);
+    }
+
+    .info-text {
+      color: #e5e7eb;
+      font-size: clamp(15px, 2.2vw, 18px);
+      line-height: 1.85;
+    }
+
+    .urgency {
+      text-align: center;
+      background: rgba(127, 29, 29, .36);
+      border: 2px solid rgba(239, 68, 68, .9);
+      color: #f87171;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 14px;
+      font-size: clamp(13px, 2vw, 16px);
+      line-height: 1.7;
+      font-weight: 900;
+      box-shadow: 0 0 15px rgba(255,0,0,.24);
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .cta-link {
+      display: block;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      color: #fff;
+      padding: 15px 18px;
+      font-size: clamp(18px, 3vw, 23px);
+      line-height: 1.45;
+      font-weight: 900;
+      background: linear-gradient(45deg, #ff00ff, #00f3ff);
+      background-size: 200% auto;
+      animation: gradientMove 3s ease infinite;
+      border: 0;
+      box-shadow: 0 0 22px rgba(255,0,255,.35);
+    }
+
+    .restart-btn {
+      width: 100%;
+      padding: 12px 16px;
+      background: transparent;
+      color: #c6ccd6;
+      border: 2px solid #374151;
+      font-size: clamp(14px, 2.2vw, 17px);
+      font-weight: 900;
+    }
+
+    .restart-btn:hover {
+      color: #fff;
+      background: rgba(31,41,55,.65);
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .hidden-page {
+      display: none !important;
+    }
+
+    @media (max-width: 760px) {
+      .quiz-shell {
+        padding: 8px;
+      }
+
+      .panel {
+        border-radius: 14px;
+        padding: 22px 16px;
+      }
+
+      .home-panel {
+        text-align: center;
+        padding-top: 24px;
+        padding-bottom: 24px;
+      }
+
+      .top-bar {
+        padding-bottom: 12px;
+        margin-bottom: 18px;
+      }
+
+      .question-title {
+        margin-bottom: 18px;
+      }
+
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .option-btn:hover,
+      .option-btn:focus-visible {
+        transform: none;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .quiz-shell {
+        padding: 6px;
+      }
+
+      .panel {
+        padding: 20px 13px;
+      }
+
+      .home-title {
+        font-size: 23px;
+      }
+
+      .question-title {
+        font-size: 14px;
+      }
+
+      .option-btn {
+        font-size: 14px;
+        padding: 13px;
+        line-height: 1.65;
+      }
+
+      .info-text {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="quiz-shell">
+    <div id="app-container" class="app-container">
+
+      <section id="page-0" class="page active panel home-panel">
+        <div class="scanlines"></div>
+        <div class="lock-icon">🔓</div>
+
+        <h1 class="home-title">
+          解鎖你的<br>「隱藏設計人格」！
+        </h1>
+
+        <p class="home-desc">
+          30 秒用日常直覺，測出你的產品造物主屬性。
+        </p>
+
+        <button onclick="startGame()" class="main-btn" type="button">
+          [ 進入測驗 ]
+        </button>
+      </section>
+
+      <section id="question-container" class="page panel pink">
+        <div class="scanlines"></div>
+
+        <div class="top-bar">
+          <span id="q-progress" class="progress">Q1/3</span>
+          <span class="stage">STAGE <span id="q-stage">1</span></span>
+        </div>
+
+        <h2 id="q-title" class="question-title"></h2>
+
+        <div id="q-options" class="options"></div>
+
+        <div class="nav-row">
+          <button id="btn-prev" onclick="prevQuestion()" class="back-btn hidden-page" type="button">
+            [ ← 回上一題 ]
+          </button>
+        </div>
+      </section>
+
+      <section id="result-container" class="page panel green">
+        <div class="scanlines"></div>
+
+        <div class="result-head">
+          <div id="r-icon" class="result-icon">👑</div>
+          <h1 id="r-title" class="result-title green"></h1>
+        </div>
+
+        <div class="result-grid">
+          <div class="info-box">
+            <h3 class="info-title cyan">🎯 特質分析</h3>
+            <p id="r-analysis" class="info-text"></p>
+          </div>
+
+          <div class="info-box">
+            <h3 class="info-title pink">💡 清大專屬超能力適配</h3>
+            <p id="r-pitch" class="info-text"></p>
+          </div>
+        </div>
+
+        <div class="urgency">
+          ⚠️ 免費報名倒數中！清大生限定（僅收保證金）<br>
+          報名至 6/8（一）截止！
+        </div>
+
+        <div class="actions">
+          <a href="https://ccd.nthu.edu.tw/event/1285" target="_blank" rel="noopener noreferrer" class="cta-link">
+            <span id="r-cta-icon"></span> 立刻報名課程！
+          </a>
+
+          <button onclick="restartGame()" class="restart-btn" type="button">
+            [ ↺ 再測一次 ]
+          </button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    const questions = [
+      {
+        title: "Q1. 當你下載了一個新 App，一打開卻發現找不到「關閉廣告」的 X 按鈕時，你的第一反應是？",
+        options: [
+          { text: "流程邏輯控：「這動線太不貼心了吧！背後運作邏輯不及格！」", type: "UX" },
+          { text: "視覺強迫症：「這個 X 按鈕配色跟背景一模一樣是認真的嗎？好想幫它重新排版...」", type: "UI" },
+          { text: "點子爆炸狂：「如果這邊改成用雙擊螢幕略過，絕對比現在這個設計帥多了！」", type: "MIX" }
+        ]
+      },
+      {
+        title: "Q2. 跟朋友約聚餐，在用手機看網頁菜單時，你最無法忍受哪件事情？",
+        options: [
+          { text: "數據混亂派：菜單沒有分類，價格和品項混在一起，超級沒效率。", type: "UX" },
+          { text: "畫面崩壞派：圖片加載不出來、排版字體跑位、食物照片拍得很醜。", type: "UI" },
+          { text: "操作卡頓派：點按鈕沒反應，想放大看一下內容還會整頁死機。", type: "MIX" }
+        ]
+      },
+      {
+        title: "Q3. 終於要和朋友出國畢業旅行了！在出發前規劃行程時，你通常扮演什麼樣的角色？",
+        options: [
+          { text: "行程表魔王：負責把景點排進 Notion，時程精準、講求動線順暢不繞路。", type: "UX" },
+          { text: "視覺與打卡擔當：負責搜集最新最美、拍起來最好看的私房景點，確保視覺質感最高。", type: "UI" },
+          { text: "現場神 carry 機動流：懶得看行程，但遇到突發狀況能一秒變出超酷的新點子。", type: "MIX" }
+        ]
+      }
+    ];
+
+    const results = {
+      UX: {
+        title: "邏輯爆棚體驗大師（UX 潛力股）",
+        icon: "🧠",
+        color: "cyan",
+        analysis: "你擁有超強的同理心與邏輯思維！你排旅程重視的「動線流暢」、看 App 重視的「運作邏輯」，正是設計一款好用產品必備的 UX 核心能力。",
+        pitch: "你的特質跟清大 UI/UX 班的【UX 使用者研究與設計思維】完美適配！今年首度結合 AI 實作，教你用 AI 像排旅遊動線一樣，絲滑地梳理產品邏輯！",
+        ctaIcon: "🚀"
+      },
+      UI: {
+        title: "直覺美感流大師（UI 潛力股）",
+        icon: "🎨",
+        color: "pink",
+        analysis: "你對美感、排版、視覺氛圍有著極度敏銳的雷達！你天生就知道怎麼用視覺包裝去打中人心，是把數位產品變漂亮的「畫面魔術師」。",
+        pitch: "你的特質跟清大 UI/UX 班的【Figma UI 設計工具實作】完美適配！教你用 AI 快速捕捉頂級排版與配色靈感，無理工背景也能輕鬆上手！",
+        ctaIcon: "✨"
+      },
+      MIX: {
+        title: "突破框架產品發明家（UI/UX 全能雙棲）",
+        icon: "⚡",
+        color: "green",
+        analysis: "你腦袋裡充滿彈性與各種點子，既能在現場帶給夥伴完美的體驗（UX），又熱愛生活中各種精美的新鮮事物（UI）！你是能在未知環境中創造驚喜的「全能產品造物主」。",
+        pitch: "你的特質跟清大 UI/UX 班的【App/Web Redesign 小組專題】完美適配！從零到有跟夥伴一起做出專屬求職作品集，學到最新 AI 輔助設計流程！",
+        ctaIcon: "💎"
+      }
+    };
+
+    let currentStep = 0;
+    let answers = [];
+
+    function scrollToTop() {
+      try {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } catch (e) {
+        window.scrollTo(0, 0);
+      }
+    }
+
+    function showOnly(pageId) {
+      document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+      });
+      document.getElementById(pageId).classList.add("active");
+      scrollToTop();
+    }
+
+    function startGame() {
+      currentStep = 0;
+      answers = [];
+      renderQuestion();
+      showOnly("question-container");
+    }
+
+    function renderQuestion() {
+      const q = questions[currentStep];
+
+      document.getElementById("q-progress").innerText = `Q${currentStep + 1}/3`;
+      document.getElementById("q-stage").innerText = currentStep + 1;
+      document.getElementById("q-title").innerText = q.title;
+
+      const btnPrev = document.getElementById("btn-prev");
+      btnPrev.classList.toggle("hidden-page", currentStep === 0);
+
+      const optionsContainer = document.getElementById("q-options");
+      optionsContainer.innerHTML = "";
+
+      q.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "option-btn";
+        btn.innerText = opt.text;
+        btn.onclick = () => selectOption(opt.type);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function selectOption(type) {
+      answers[currentStep] = type;
+
+      if (currentStep < questions.length - 1) {
+        currentStep += 1;
+        renderQuestion();
+        scrollToTop();
+      } else {
+        showResult();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentStep > 0) {
+        currentStep -= 1;
+        renderQuestion();
+        scrollToTop();
+      }
+    }
+
+    function showResult() {
+      const counts = { UX: 0, UI: 0, MIX: 0 };
+      answers.forEach(ans => {
+        if (ans) counts[ans] += 1;
+      });
+
+      let finalType = "UX";
+      let maxScore = -1;
+
+      Object.entries(counts).forEach(([type, score]) => {
+        if (score > maxScore) {
+          maxScore = score;
+          finalType = type;
+        }
+      });
+
+      if (counts.UX === 1 && counts.UI === 1 && counts.MIX === 1) {
+        finalType = answers[2];
+      }
+
+      const resData = results[finalType];
+
+      const resultPanel = document.getElementById("result-container");
+      resultPanel.className = "page panel " + resData.color;
+
+      const rTitle = document.getElementById("r-title");
+      rTitle.className = "result-title " + resData.color;
+
+      document.getElementById("r-icon").innerText = resData.icon;
+      document.getElementById("r-title").innerText = resData.title;
+      document.getElementById("r-analysis").innerText = resData.analysis;
+      document.getElementById("r-pitch").innerText = resData.pitch;
+      document.getElementById("r-cta-icon").innerText = resData.ctaIcon;
+
+      showOnly("result-container");
+    }
+
+    function restartGame() {
+      currentStep = 0;
+      answers = [];
+      showOnly("page-0");
+    }
+  </script>
+</body>
+</html>
