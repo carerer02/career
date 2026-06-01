@@ -1,460 +1,526 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>時空登機證：解鎖你的未來產品引路人屬性</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      width: 100%;
-      min-height: 100%;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
-      background: transparent;
-      color: #fff;
-    }
-    body { overflow-x: hidden; }
-    .quiz-shell {
-      width: 100%;
-      min-height: 100vh;
-      padding: clamp(12px, 3vw, 28px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background:
-        radial-gradient(circle at 50% 20%, rgba(13, 7, 53, .95), transparent 38%),
-        radial-gradient(circle at 10% 85%, rgba(0, 242, 254, .16), transparent 34%),
-        radial-gradient(circle at 90% 15%, rgba(224, 86, 253, .15), transparent 30%),
-        #03020d;
-    }
-    .panel {
-      width: min(100%, 980px);
-      min-height: clamp(430px, 72vh, 720px);
-      border: 1px solid rgba(0, 242, 254, .35);
-      background: rgba(6, 4, 20, .9);
-      box-shadow: 0 0 28px rgba(0, 242, 254, .18), inset 0 0 26px rgba(224, 86, 253, .08);
-      position: relative;
-      overflow: hidden;
-      padding: clamp(24px, 5vw, 58px);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      border-radius: 0;
-    }
-    .panel::before,
-    .panel::after {
-      content: "";
-      position: absolute;
-      width: 28px;
-      height: 28px;
-      border-color: rgba(224, 86, 253, .85);
-      pointer-events: none;
-    }
-    .panel::before { top: 14px; left: 14px; border-top: 4px solid; border-left: 4px solid; }
-    .panel::after { top: 14px; right: 14px; border-top: 4px solid; border-right: 4px solid; }
-    .corner-bottom-left,
-    .corner-bottom-right {
-      position: absolute;
-      width: 28px;
-      height: 28px;
-      bottom: 14px;
-      pointer-events: none;
-      border-color: rgba(224, 86, 253, .85);
-    }
-    .corner-bottom-left { left: 14px; border-bottom: 4px solid; border-left: 4px solid; }
-    .corner-bottom-right { right: 14px; border-bottom: 4px solid; border-right: 4px solid; }
-    .page { display: none; animation: fade .25s ease both; }
-    .page.active { display: block; }
-    @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .center { text-align: center; }
-    .title {
-      font-size: clamp(32px, 5.5vw, 54px);
-      line-height: 1.25;
-      font-weight: 900;
-      letter-spacing: .02em;
-      margin-bottom: clamp(18px, 3vw, 28px);
-      text-shadow: 0 0 18px rgba(255, 255, 255, .16);
-    }
-    .subtitle {
-      font-size: clamp(17px, 2.6vw, 25px);
-      color: #8bf7ff;
-      font-weight: 800;
-      line-height: 1.55;
-      margin-bottom: clamp(22px, 4vw, 34px);
-      text-shadow: 0 0 12px rgba(0, 242, 254, .32);
-    }
-    .desc {
-      width: min(100%, 720px);
-      margin: 0 auto clamp(26px, 4.5vw, 44px);
-      font-size: clamp(15px, 2.1vw, 19px);
-      line-height: 1.85;
-      color: #e2e8f0;
-    }
-    .btn {
-      appearance: none;
-      border: 1px solid rgba(0, 242, 254, .72);
-      background: rgba(12, 10, 35, .9);
-      color: #f8fafc;
-      font-weight: 800;
-      font-size: clamp(15px, 2.1vw, 19px);
-      line-height: 1.45;
-      padding: 15px 22px;
-      min-height: 54px;
-      cursor: pointer;
-      box-shadow: 0 0 12px rgba(0, 242, 254, .22);
-      clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
-      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
-    }
-    .btn:hover, .btn:focus-visible { transform: translateY(-1px); box-shadow: 0 0 20px rgba(0, 255, 178, .35); background: rgba(25, 22, 65, .95); }
-    .btn-primary { width: min(100%, 420px); }
-    .station {
-      color: #e879f9;
-      text-align: center;
-      font-size: clamp(20px, 3.4vw, 34px);
-      font-weight: 900;
-      margin-bottom: 14px;
-    }
-    .progress {
-      width: min(420px, 72%);
-      height: 7px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.12);
-      margin: 0 auto clamp(22px, 4vw, 34px);
-      overflow: hidden;
-    }
-    .progress span { display: block; height: 100%; background: #00f2fe; border-radius: inherit; box-shadow: 0 0 14px rgba(0,242,254,.7); }
-    .question {
-      width: min(100%, 840px);
-      margin: 0 auto clamp(18px, 3.8vw, 32px);
-      color: #fff;
-      text-align: center;
-      font-size: clamp(17px, 2.6vw, 24px);
-      font-weight: 800;
-      line-height: 1.65;
-    }
-    .options {
-      width: min(100%, 880px);
-      margin: 0 auto;
-      display: grid;
-      gap: clamp(10px, 2vw, 16px);
-    }
-    .option {
-      width: 100%;
-      text-align: left;
-      min-height: unset;
-      padding: clamp(13px, 2.2vw, 18px) clamp(15px, 2.5vw, 22px);
-      font-size: clamp(14px, 2.1vw, 17px);
-      font-weight: 700;
-    }
-    .nav-row {
-      margin-top: clamp(18px, 3vw, 28px);
-      display: flex;
-      justify-content: center;
-    }
-    .btn-back { min-width: 170px; border-color: rgba(255,255,255,.28); color: #e5e7eb; }
-    .result-kicker {
-      color: #00ffb2;
-      text-align: center;
-      font-weight: 900;
-      font-size: clamp(16px, 2.3vw, 20px);
-      margin-bottom: 14px;
-    }
-    .result-title {
-      text-align: center;
-      color: #f472b6;
-      font-size: clamp(22px, 3.6vw, 34px);
-      font-weight: 900;
-      line-height: 1.45;
-      margin-bottom: clamp(16px, 3vw, 26px);
-      white-space: pre-line;
-    }
-    .result-card {
-      width: min(100%, 860px);
-      margin: 0 auto;
-      border: 1px solid rgba(224, 86, 253, .42);
-      background: rgba(6, 4, 20, .94);
-      box-shadow: 0 0 14px rgba(224, 86, 253, .18);
-      padding: clamp(18px, 3vw, 28px);
-      color: #fff;
-      font-size: clamp(15px, 2.2vw, 18px);
-      line-height: 1.85;
-      white-space: pre-line;
-    }
-    .urgency {
-      width: min(100%, 820px);
-      margin: clamp(18px, 3vw, 26px) auto clamp(16px, 3vw, 24px);
-      text-align: center;
-      color: #ffd085;
-      font-size: clamp(15px, 2.2vw, 18px);
-      line-height: 1.65;
-      font-weight: 900;
-    }
-    .result-actions {
-      width: min(100%, 860px);
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: .34fr .66fr;
-      gap: 14px;
-    }
-    .btn-cta { border-color: rgba(0,242,254,.78); }
-    .btn-restart { border-color: rgba(255,255,255,.28); }
-    .hidden { display: none !important; }
-    @media (max-width: 720px) {
-      .quiz-shell { min-height: auto; padding: 10px; align-items: flex-start; }
-      .panel {
-        min-height: auto;
-        padding: 30px 18px 24px;
-      }
-      .desc { margin-bottom: 24px; }
-      .result-actions { grid-template-columns: 1fr; }
-      .btn { width: 100%; }
-    }
-    @media (max-width: 420px) {
-      .quiz-shell { padding: 8px; }
-      .panel { padding: 26px 14px 20px; }
-      .title { font-size: 29px; }
-      .subtitle { font-size: 16px; }
-      .desc { font-size: 14px; line-height: 1.75; }
-      .station { font-size: 19px; }
-      .question { font-size: 16px; line-height: 1.55; }
-      .option { font-size: 13.5px; line-height: 1.55; padding: 12px 13px; }
-      .result-card { font-size: 14px; line-height: 1.75; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>115學年度實習故事心得競賽 - 闖關大挑戰</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial Rounded MT Bold', "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans CJK TC", sans-serif;
+        }
+
+        /* 加入 height: 100% 幫助解決 Google Sites iframe 嵌入問題 */
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background-color: #FFE5E5; 
+            background-image: radial-gradient(#111827 1px, transparent 1px);
+            background-size: 20px 20px;
+            /* 使用 dvh (Dynamic Viewport Height) 以適應 FB App 的上下工具列 */
+            min-height: 100vh;
+            min-height: 100dvh; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1.5rem; 
+            color: #111827;
+            overflow-x: hidden; 
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: #FFFFFF;
+            border: 4px solid #111827;
+            border-radius: 20px;
+            padding: 2rem 1.5rem;
+            box-shadow: 6px 6px 0px #111827; /* 稍微縮小陰影節省空間 */
+            text-align: center;
+            position: relative;
+            height: auto; 
+            margin: auto; 
+        }
+
+        .level-progress {
+            display: inline-block;
+            color: #111827;
+            padding: 6px 18px;
+            border: 3px solid #111827;
+            border-radius: 999px;
+            font-weight: 900;
+            font-size: 1.05rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 3px 3px 0px #111827;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            color: #111827;
+            margin-bottom: 0.5rem;
+            font-weight: 900;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #4B5563;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card {
+            background: #FFFFFF;
+            border: 3px solid #111827;
+            border-radius: 16px;
+            padding: 1.2rem 0.75rem;
+            cursor: pointer;
+            transition: all 0.15s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px; 
+            box-shadow: 4px 4px 0px #111827;
+            position: relative;
+            touch-action: manipulation;
+            -webkit-user-select: none; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        .card:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #111827;
+            background: #F3F4F6;
+        }
+
+        .card:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px #111827;
+        }
+
+        .card .text {
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: #111827;
+            line-height: 1.4;
+            z-index: 1;
+        }
+
+        .card.matched {
+            background: #86EFAC;
+            border-color: #111827;
+            cursor: default;
+            pointer-events: none;
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px #111827;
+        }
+
+        .card.error {
+            background: #FCA5A5;
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(17, 24, 39, 0.8);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #E0E7FF;
+            border: 4px solid #111827;
+            padding: 2rem 1.5rem;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 100%;
+            /* 針對手機版加入高度限制，更嚴格的 80vh 防止 FB 底部條遮擋 */
+            max-height: 85vh; 
+            overflow-y: auto; 
+            text-align: center;
+            box-shadow: 8px 8px 0px #111827;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .modal-content::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        .modal-content::-webkit-scrollbar-thumb {
+            background: #111827; 
+            border-radius: 10px;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8) rotate(-2deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .modal h2 {
+            color: #111827;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 900;
+            text-shadow: 2px 2px 0px #A5B4FC;
+        }
+
+        .modal p {
+            font-size: 1.05rem;
+            line-height: 1.5;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            text-align: left;
+            background: #FFFFFF;
+            padding: 1.2rem;
+            border-radius: 12px;
+            border: 3px solid #111827;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: #38BDF8;
+            color: #111827;
+            border: 3px solid #111827;
+            padding: 1rem 1.8rem;
+            font-size: 1.15rem;
+            font-weight: 900;
+            border-radius: 999px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px #111827;
+            transition: all 0.15s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #111827;
+            background: #7DD3FC;
+        }
+
+        .btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px #111827;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+
+        /* 🎵 新增：音效開關按鈕樣式 */
+        .sound-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: #FFFFFF;
+            border: 3px solid #111827;
+            border-radius: 50%;
+            width: 46px;
+            height: 46px;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 3px 3px 0px #111827;
+            z-index: 2000;
+            transition: all 0.15s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .sound-toggle:active {
+            transform: translate(3px, 3px);
+            box-shadow: 0px 0px 0px #111827;
+        }
+
+        /* 💡 針對手機 (Facebook App / Google Sites 嵌入) 進行終極排版壓縮 */
+        @media (max-width: 480px) {
+            body { 
+                padding: 0.5rem; /* 幾乎不留外部白邊 */
+            }
+            .container { 
+                padding: 1.25rem 1rem; /* 壓縮內部白邊 */
+                margin-top: 0; 
+                margin-bottom: 0;
+                border-width: 3px; 
+                border-radius: 16px;
+            }
+            .game-board {
+                grid-template-columns: 1fr;
+                gap: 0.65rem; /* 大幅縮小卡片間距 */
+            }
+            header h1 { font-size: 1.6rem; margin-bottom: 0.25rem; }
+            header p { font-size: 1rem; margin-bottom: 1rem; }
+            .level-progress { margin-bottom: 1rem; font-size: 1rem; padding: 4px 14px; }
+            
+            .card {
+                padding: 0.85rem; /* 壓縮卡片內距 */
+                min-height: auto; /* 讓內容自動撐高，不強制預留空間 */
+            }
+            .card .text { font-size: 1.1rem; }
+            
+            /* Modal 壓縮，確保按鈕能顯示 */
+            .modal-content {
+                padding: 1.5rem 1.25rem;
+                max-height: 80vh; 
+            }
+            .modal h2 { font-size: 1.6rem; }
+            .modal p { font-size: 1rem; padding: 1rem; margin-bottom: 1rem; }
+            .btn { padding: 0.85rem 1.2rem; font-size: 1.1rem; }
+        }
+
+        /* 💡 針對特別矮的手機螢幕(或橫向)做額外防護 */
+        @media (max-height: 650px) {
+            header p { margin-bottom: 0.5rem; }
+            .card { padding: 0.6rem; }
+            .game-board { gap: 0.5rem; }
+            .level-progress { margin-bottom: 0.5rem; }
+        }
+
+    </style>
 </head>
 <body>
-  <main class="quiz-shell">
-    <section class="panel" aria-live="polite">
-      <span class="corner-bottom-left"></span>
-      <span class="corner-bottom-right"></span>
 
-      <div id="page-home" class="page active center">
-        <h1 class="title">🛸 時空登機證</h1>
-        <div class="subtitle">解鎖你的「未來產品引路人」屬性</div>
-        <p class="desc">數位時代的核心秘密，其實藏在你的日常直覺裡。<br>只需 30 秒，解鎖你的數位天賦，展開驚艷的未來航程！</p>
-        <button class="btn btn-primary" type="button" onclick="startQuiz()">驗證數位 DNA（開始測驗）</button>
-      </div>
+    <!-- 新增：音效開關按鈕 -->
+    <button id="sound-toggle" class="sound-toggle" onclick="toggleSound()">🔊</button>
 
-      <div id="page-quiz" class="page">
-        <div class="station" id="station"></div>
-        <div class="progress"><span id="progressBar"></span></div>
-        <div class="question" id="question"></div>
-        <div class="options" id="options"></div>
-        <div class="nav-row">
-          <button id="backBtn" class="btn btn-back" type="button" onclick="goBack()">◀ 返回上一步</button>
+    <!-- 遊戲封面首頁 -->
+    <div class="container" id="cover-page">
+        <header>
+            <div class="level-progress" style="background: #FCA5A5; transform: rotate(3deg);">📸 GUIDE BOOK</div>
+            <h1 style="font-size: 2.2rem; margin-top: 0.5rem; line-height: 1.3;">實習回憶微光<br>終極參賽攻略</h1>
+            <p style="margin-top: 0.5rem; font-size: 1.15rem;">把我的職場日常，變成他的指南大補帖！<br>30秒闖關解鎖專屬獎勵與報名資格 🏆</p>
+        </header>
+        <button class="btn" onclick="startGame()" style="font-size: 1.4rem; padding: 1rem 2.5rem; margin-top: 0.5rem; background: #FDE047;">開始攻略 🚀</button>
+    </div>
+
+    <!-- 遊戲闖關主畫面 -->
+    <div class="container hidden" id="game-page">
+        <header>
+            <div class="level-progress" id="level-progress" style="background: #FDE047; transform: rotate(-2deg);">🚀 LEVEL 1 / 3</div>
+            <h1 id="level-title">實習競賽挑戰</h1>
+            <p id="level-desc">選出所有正確條件，解鎖下一關！</p>
+        </header>
+
+        <div class="game-board" id="board">
+            <!-- 卡片動態生成 -->
         </div>
-      </div>
+    </div>
 
-      <div id="page-result" class="page">
-        <div class="result-kicker">🛸 時空登機認證成功 🛸</div>
-        <div class="result-title" id="resultTitle"></div>
-        <div class="result-card" id="resultDesc"></div>
-        <div class="urgency" id="resultUrgency"></div>
-        <div class="result-actions">
-          <button class="btn btn-cta" type="button" onclick="openCourse()" id="resultBtn"></button>
-          <button class="btn btn-restart" type="button" onclick="restartQuiz()">🔄 再測一次</button>
+    <!-- 🎵 隱藏的音效元件 (使用公開 CDN 免費授權音效) -->
+    <audio id="sound-click" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
+    <audio id="sound-correct" src="https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3" preload="auto"></audio>
+    <audio id="sound-error" src="https://assets.mixkit.co/active_storage/sfx/2955/2955-preview.mp3" preload="auto"></audio>
+    <audio id="sound-win" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3" preload="auto"></audio>
+
+    <!-- 單關通關彈出視窗 -->
+    <div class="modal" id="levelSuccessModal">
+        <div class="modal-content" style="background: #D9F99D; max-width: 400px;">
+            <h2 style="text-shadow: 2px 2px 0px #BEF264;">🎉 恭喜通關！</h2>
+            <p style="text-align: center; border: 2px dashed #111827; background: transparent;">本關所有條件已成功解鎖！<br>快前往下一個關卡吧！</p>
+            <button class="btn" onclick="proceedToNextLevel()">下一關 ➡️</button>
         </div>
-      </div>
-    </section>
-  </main>
+    </div>
 
-  <script>
-    // --- 🔊 科幻音效系統 (僅保留圓潤乾淨的點擊音效) ---
-    let audioCtx = null;
+    <!-- 終極通關彈出視窗 -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <h2>🎉 恭喜通關！你已成功打包競賽完全攻略</h2>
+            <p>
+               ✅ <strong>報名資格</strong><br>清華具正式學籍在校生 (*)<br>
+               2025/10月~2026/09/15 期間實習<br>
+               同機構實習達60小時 (*)<br>
+               <span style="font-size: 0.75rem; font-weight: normal; color: #4B5563;">標示*需參閱詳細規定</span><br><br>
+               🎒 <strong>準備裝備</strong><br>1張照片+1篇心得+證明+切結書<br><br>
+               🎯 <strong>報名期限</strong><br>07/01-09/15 職發組官網投遞
+            </p>
+            <!-- 雙按鈕並排：改為 flex, horizontal 排列, 互換位置並調整大小 -->
+            <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.5rem; flex-wrap: nowrap;">
+                <a href="https://ccd.nthu.edu.tw/news/529" target="_blank" class="btn" style="background: #FDE047; padding: 0.8rem 1rem; font-size: 1rem; flex: 1; text-align: center; white-space: nowrap;">詳細報名 🔗</a>
+                <button class="btn" onclick="restartGame()" style="padding: 0.8rem 1rem; font-size: 1rem; flex: 1; white-space: nowrap;">再玩一次 🎮</button>
+            </div>
+        </div>
+    </div>
 
-    function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
+    <script>
+        const gameLevels = [
+            {
+                title: "Q1. 誰有資格報名？",
+                desc: "點擊【所有】符合參賽資格的條件！",
+                cards: [
+                    { text: "🧑‍🎓 清華具正式學籍在校生", correct: true },
+                    { text: "🗓️ 去年10月~今年09/15期間實習", correct: true },
+                    { text: "⏳ 同機構實習滿 60 小時", correct: true },
+                    { text: "🎓 已經畢業三年的清華校友", correct: false }
+                ]
+            },
+            {
+                title: "Q2. 報名需要帶什麼？",
+                desc: "點擊【所有】必備的徵件裝備！",
+                cards: [
+                    { text: "📸 1張實習照片 + 1篇心得", correct: true },
+                    { text: "📜 實習證明", correct: true },
+                    { text: "✍️ 附件2切結書", correct: true },
+                    { text: "💸 報名手續費 500 元", correct: false }
+                ]
+            },
+            {
+                title: "Q3. 怎麼投遞報名？",
+                desc: "點擊【所有】正確的投稿資訊！",
+                cards: [
+                    { text: "🌐 職涯發展組官網投遞", correct: true },
+                    { text: "⏰ 2026/07/01 起開放投稿", correct: true },
+                    { text: "🇹🇼中文或🇺🇸英文擇一即可", correct: true },
+                    { text: "🤯 必須同時繳交雙語版本", correct: false }
+                ]
+            }
+        ];
 
-    // 播放點擊音 (太空艙啟動確認音：乾淨俐落、帶有雙重頻率上揚的未來感確認音)
-    function playClickSound() {
-      try {
-        initAudio();
-        const now = audioCtx.currentTime;
+        let currentLevelIndex = 0;
+        let correctFoundInLevel = 0;
+        let targetCorrectInLevel = 0;
+        let isSoundEnabled = true; // 新增：音效開關狀態變數
 
-        // 第一重頻率上揚 (基底厚實度)
-        const osc1 = audioCtx.createOscillator();
-        const gain1 = audioCtx.createGain();
-        osc1.connect(gain1);
-        gain1.connect(audioCtx.destination);
-
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(330, now);
-        osc1.frequency.exponentialRampToValueAtTime(660, now + 0.08);
-
-        gain1.gain.setValueAtTime(0.05, now);
-        gain1.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
-
-        osc1.start(now);
-        osc1.stop(now + 0.08);
-
-        // 第二重頻率上揚 (延遲 0.03 秒疊加，創造極富質感的「上揚二重音」)
-        const osc2 = audioCtx.createOscillator();
-        const gain2 = audioCtx.createGain();
-        osc2.connect(gain2);
-        gain2.connect(audioCtx.destination);
-
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(440, now + 0.03);
-        osc2.frequency.exponentialRampToValueAtTime(880, now + 0.11);
-
-        gain2.gain.setValueAtTime(0.04, now + 0.03);
-        gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.11);
-
-        osc2.start(now + 0.03);
-        osc2.stop(now + 0.11);
-      } catch (e) {}
-    }
-
-    // --- 🎮 事件偵聽與點擊音效綁定 (完全移除滑鼠懸停音效邏輯) ---
-    document.addEventListener('click', (e) => {
-      if (e.target.closest('.btn')) {
-        playClickSound();
-      }
-    });
-
-    // --- 📝 心理測驗腳本與核心邏輯 ---
-    const quizData = {
-      questions: [
-        {
-          station: "【航程第一站】日常 App 體驗",
-          question: "Q1. 當你下載了一個新 App，一打開卻發現找不到「關閉廣告」的 X 按鈕時，你的第一反應是？",
-          options: [
-            { key: "A", text: "A. 流程邏輯控：「這動線太不貼心了吧！背後運作邏輯不及格！」" },
-            { key: "B", text: "B. 視覺強迫症：「這個 X 按鈕配色跟背景一模一樣是認真的嗎？好想幫它重新排版...」" },
-            { key: "C", text: "C. 點子爆炸狂：「如果這邊改成用雙擊螢幕略過，絕對比現在這個設計帥多了！」" }
-          ]
-        },
-        {
-          station: "【航程第二站】數位生活痛點",
-          question: "Q2. 跟朋友約聚餐，在用手機看網頁菜單時，你最無法忍受哪件事情？",
-          options: [
-            { key: "A", text: "A. 數據混亂派：菜單沒有分類，價格 and 品項混在一起，點個餐還要上下比對、算價錢，超級沒效率。" },
-            { key: "B", text: "B. 畫面崩壞派：圖片加載不出來、排版字體跑位、食物照片拍得很醜，讓人瞬間失去食慾。" },
-            { key: "C", text: "C. 操作卡頓派：點按鈕沒反應、跳轉超慢，想放大看一下內容還會整頁死機。" }
-          ]
-        },
-        {
-          station: "【航程第三站】出國旅遊規劃",
-          question: "Q3. 終於要和朋友出國畢業旅行了！在出發前規劃行程時，你通常扮演什麼樣的角色？",
-          options: [
-            { key: "A", text: "A. 行程表魔王：負責把景點、美食、交通轉乘排進 Notion，時程精準、講求動線順暢不繞路。" },
-            { key: "B", text: "B. 視覺與打卡擔當：負責搜集最新最美、拍起來最好看的網美咖啡廳或私房景點，確保整趟旅程的視覺質感最高。" },
-            { key: 'C', text: "C. 現場神 carry 機動流：懶得看密密麻麻的行程，但到現場時方向感極佳，遇到突發狀況能一秒變出超酷的新點子。" }
-          ]
+        // 🎵 新增：切換音效開關邏輯
+        function toggleSound() {
+            isSoundEnabled = !isSoundEnabled;
+            const toggleBtn = document.getElementById('sound-toggle');
+            if (isSoundEnabled) {
+                toggleBtn.innerText = '🔊';
+                playSound('sound-click'); // 開啟時播個提示音
+            } else {
+                toggleBtn.innerText = '🔇';
+            }
         }
-      ],
-      results: {
-        A: {
-          title: "【分析報告 A】邏輯爆棚體驗大師\n(UX 潛力股)",
-          desc: "🌌 特質分析：\n你擁有超強的同理心與邏輯思維！你排旅程重視的「動線流暢」、看 App 重視的「運作邏輯」，正是設計一款好用產品必備的 UX 核心能力。\n\n🚀 精準課程推薦：\n你的特質跟清大 UI/UX 班的【UX 使用者研究與設計思維】完美適配！今年課程首度結合 AI 實作，教你用 AI 像排旅遊動線一樣，絲滑地梳理產品邏輯！",
-          urgency: "⚡ 限時報名：清大生限定，免費（僅收2500元保證金）！報名至 6/8 截止，別讓天賦睡著了！",
-          btn: "🚀 領取時空特等席，立刻報名課程！"
-        },
-        B: {
-          title: "【分析報告 B】直覺美感流大師\n(UI 潛力股)",
-          desc: "🌌 特質分析：\n你對美感、排版、視覺氛圍有著極度敏銳的雷達！你挑選的打卡景點絕對是視覺焦點。你天生就知道怎麼用視覺包裝去打中人心，是把數位產品變漂亮的「畫面魔術師」。\n\n🚀 精準課程推薦：\n你的特質跟清大 UI/UX 班的【Figma UI 設計工具實作】完美適配！今年課程首度結合 AI 工具，教你如何用 AI 快速捕捉頂級排版與配色靈感，把美感轉化為高產值技能！無理工背景也能上手！",
-          urgency: "⚡ 限時報名：清大生限定，免費（僅收2500元保證金）！報名至 6/8 截止，給自己一個跨界機會！",
-          btn: "🎨 領取時空特等席，立刻報名課程！"
-        },
-        C: {
-          title: "【分析報告 C】突破框架產品發明家\n(UI/UX 全能雙棲)",
-          desc: "🌌 特質分析：\n你腦袋裡充滿彈性與各種點子，既能在現場帶給夥伴完美的體驗（UX），又熱愛生活中各種精美的新鮮事物（UI）！你是能在未知環境中創造驚喜的「全能產品造物主」。\n\n🚀 精準課程推薦：\n你的特質跟清大 UI/UX 班的【App/Web Redesign 小組專題與成果發表】完美適配！這門課能讓你從零到有跟夥伴一起做出屬於自己的求職作品集，還能學到最新 AI 輔助設計流程！",
-          urgency: "⚡ 限時報名：清大生限定，免費（僅收2500元保證金）！報名至 6/8 截止，立刻動手點擊參加！",
-          btn: "💎 領取時空特等席，立刻報名課程！"
+
+        // 🎵 音效播放共用函數 (已加入靜音判斷)
+        function playSound(soundId) {
+            if (!isSoundEnabled) return; // 如果靜音模式開啟，則直接返回不播放
+            const sound = document.getElementById(soundId);
+            if (sound) {
+                sound.currentTime = 0; // 每次播放前重置時間，允許快速連點重疊播放
+                sound.play().catch(error => console.log("音效播放被瀏覽器阻擋:", error));
+            }
         }
-      }
-    };
 
-    let currentIndex = 0;
-    let score = { A: 0, B: 0, C: 0 };
-    let selectedHistory = [];
+        function startGame() {
+            playSound('sound-click');
+            document.getElementById('cover-page').classList.add('hidden');
+            document.getElementById('game-page').classList.remove('hidden');
+            loadLevel(0);
+        }
 
-    function showPage(id) {
-      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
 
-    function startQuiz() {
-      score = { A: 0, B: 0, C: 0 };
-      selectedHistory = [];
-      currentIndex = 0;
-      renderQuestion();
-      showPage('page-quiz');
-    }
+        function loadLevel(index) {
+            const board = document.getElementById('board');
+            const levelTitle = document.getElementById('level-title');
+            const levelDesc = document.getElementById('level-desc');
+            const levelProgress = document.getElementById('level-progress');
+            
+            board.innerHTML = ''; 
+            correctFoundInLevel = 0;
+            
+            const levelData = gameLevels[index];
+            levelTitle.innerText = levelData.title;
+            levelDesc.innerText = levelData.desc;
+            levelProgress.innerText = `🚀 LEVEL ${index + 1} / ${gameLevels.length}`;
 
-    function renderQuestion() {
-      const q = quizData.questions[currentIndex];
-      document.getElementById('station').textContent = q.station;
-      document.getElementById('question').textContent = q.question;
-      document.getElementById('progressBar').style.width = `${((currentIndex + 1) / quizData.questions.length) * 100}%`;
-      document.getElementById('backBtn').classList.toggle('hidden', currentIndex === 0);
+            targetCorrectInLevel = levelData.cards.filter(c => c.correct).length;
+            const shuffledCards = shuffle([...levelData.cards]);
+            
+            shuffledCards.forEach(data => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.innerHTML = `<div class="text">${data.text}</div>`;
+                card.addEventListener('click', () => handleCardClick(card, data.correct));
+                board.appendChild(card);
+            });
+        }
 
-      const options = document.getElementById('options');
-      options.innerHTML = '';
-      q.options.forEach(opt => {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'btn option';
-        button.textContent = opt.text;
-        button.onclick = () => selectOption(opt.key);
-        options.appendChild(button);
-      });
-    }
+        function handleCardClick(card, isCorrect) {
+            if (card.classList.contains('matched') || card.classList.contains('error')) return;
 
-    function selectOption(key) {
-      selectedHistory.push({ index: currentIndex, key });
-      score[key] += 1;
-      if (currentIndex < quizData.questions.length - 1) {
-        currentIndex += 1;
-        renderQuestion();
-      } else {
-        showResult();
-      }
-    }
+            if (isCorrect) {
+                playSound('sound-correct');
+                card.classList.add('matched');
+                card.innerHTML += `<div style="margin-top:6px; font-size: 0.95rem; color: #111827; font-weight: 900;">✅ BINGO</div>`;
+                correctFoundInLevel++;
 
-    function goBack() {
-      if (selectedHistory.length === 0) return;
-      const last = selectedHistory.pop();
-      if (score[last.key] > 0) score[last.key] -= 1;
-      currentIndex = last.index;
-      renderQuestion();
-    }
+                if (correctFoundInLevel === targetCorrectInLevel) {
+                    setTimeout(() => showLevelComplete(), 400); 
+                }
+            } else {
+                playSound('sound-error');
+                card.classList.add('error');
+                card.innerHTML += `<div class="error-text" style="margin-top:6px; font-size: 0.95rem; color: #7F1D1D; font-weight: 900;">❌ 答錯啦</div>`;
+                
+                setTimeout(() => {
+                    card.classList.remove('error');
+                    const errorText = card.querySelector('.error-text');
+                    if(errorText) card.removeChild(errorText);
+                }, 500);
+            }
+        }
 
-    function showResult() {
-      const maxVal = Math.max(score.A, score.B, score.C);
-      let finalResult;
-      if (score.C === maxVal || (score.A === score.B && score.A === score.C)) {
-        finalResult = 'C';
-      } else if (score.A === maxVal) {
-        finalResult = 'A';
-      } else {
-        finalResult = 'B';
-      }
-      const data = quizData.results[finalResult];
-      document.getElementById('resultTitle').textContent = data.title;
-      document.getElementById('resultDesc').textContent = data.desc;
-      document.getElementById('resultUrgency').textContent = data.urgency;
-      document.getElementById('resultBtn').textContent = data.btn;
-      showPage('page-result');
-    }
+        function showLevelComplete() {
+            playSound('sound-win');
+            if (currentLevelIndex < gameLevels.length - 1) {
+                document.getElementById('levelSuccessModal').style.display = 'flex';
+            } else {
+                document.getElementById('successModal').style.display = 'flex';
+            }
+        }
 
-    function restartQuiz() {
-      score = { A: 0, B: 0, C: 0 };
-      selectedHistory = [];
-      currentIndex = 0;
-      showPage('page-home');
-    }
+        function proceedToNextLevel() {
+            playSound('sound-click');
+            document.getElementById('levelSuccessModal').style.display = 'none';
+            currentLevelIndex++;
+            loadLevel(currentLevelIndex);
+        }
 
-    function openCourse() {
-      window.open('https://ccd.nthu.edu.tw/event/1285', '_blank', 'noopener,noreferrer');
-    }
-  </script>
+        // 新增：不重新整理網頁，直接用 JS 重置遊戲狀態的函數
+        function restartGame() {
+            playSound('sound-click');
+            // 1. 隱藏最後的通關視窗
+            document.getElementById('successModal').style.display = 'none';
+            // 2. 隱藏遊戲主畫面
+            document.getElementById('game-page').classList.add('hidden');
+            // 3. 顯示最初的封面頁
+            document.getElementById('cover-page').classList.remove('hidden');
+            // 4. 重置關卡進度
+            currentLevelIndex = 0;
+        }
+    </script>
 </body>
 </html>
