@@ -102,7 +102,7 @@
             <!-- Headings -->
             <div class="space-y-4">
                 <h1 class="text-3xl md:text-4xl font-black font-cyber tracking-tight leading-normal text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-white to-pink-500 glitch-text">
-                    ⚔️ 職涯地下城：<br class="md:hidden">解鎖你的「隱藏設計人格」！
+                    解鎖你的「隱藏設計人格」！
                 </h1>
                 <p class="text-gray-400 text-sm md:text-base max-w-md mx-auto">
                     30 秒用日常直覺，測出你的產品造物主屬性。<br>
@@ -120,7 +120,7 @@
 
             <!-- Current Registrations Badge -->
             <div class="text-xs text-gray-500 font-cyber">
-                <i class="fa-solid fa-users text-cyan-400 mr-1"></i> 已有 <span class="text-pink-400 font-bold">41 位</span> 勇者啟程冒險 | 倒數衝刺中
+                <i class="fa-solid fa-users text-cyan-400 mr-1"></i> 勇者啟程冒險 | 倒數衝刺中
             </div>
         </div>
 
@@ -664,7 +664,7 @@
                 rc.clearRect(0, 0, size, size);
                 const cx = size / 2;
                 const cy = size / 2;
-                const r = size * 0.35;
+                const r = size * 0.32; // 稍微調小雷達圖半徑，留出更多邊緣空間給大文字
                 const sides = labels.length;
 
                 // 1. Draw pentagram/hexagon concentric support lines
@@ -694,11 +694,11 @@
                 rc.stroke();
 
                 // 3. Draw Labels text
-                rc.fillStyle = '#a0aec0';
-                rc.font = 'bold 11px "Noto Sans TC", sans-serif';
+                rc.fillStyle = '#f8fafc'; // 改為高亮度白灰色
+                rc.font = 'bold 15px "Noto Sans TC", sans-serif'; // 字體由 11px 加大至 15px
                 rc.textAlign = 'center';
                 rc.textBaseline = 'middle';
-                const padding = 18;
+                const padding = 24; // 增加間距，確保大文字不會與雷達圖頂點重疊
                 for (let i = 0; i < sides; i++) {
                     const angle = (Math.PI * 2 / sides) * i - Math.PI / 2;
                     const x = cx + (r + padding) * Math.cos(angle);
