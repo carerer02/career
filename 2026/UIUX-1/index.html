@@ -1,1 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>時空登機證：解鎖你的未來產品引路人屬性</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+      background: transparent;
+      color: #fff;
+    }
+    body { overflow-x: hidden; }
+    .quiz-shell {
+      width: 100%;
+      min-height: 100vh;
+      padding: clamp(12px, 3vw, 28px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(13, 7, 53, .95), transparent 38%),
+        radial-gradient(circle at 10% 85%, rgba(0, 242, 254, .16), transparent 34%),
+        radial-gradient(circle at 90% 15%, rgba(224, 86, 253, .15), transparent 30%),
+        #03020d;
+    }
+    .panel {
+      width: min(100%, 980px);
+      min-height: clamp(430px, 72vh, 720px);
+      border: 1px solid rgba(0, 242, 254, .35);
+      background: rgba(6, 4, 20, .9);
+      box-shadow: 0 0 28px rgba(0, 242, 254, .18), inset 0 0 26px rgba(224, 86, 253, .08);
+      position: relative;
+      overflow: hidden;
+      padding: clamp(24px, 5vw, 58px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-radius: 0;
+    }
+    .panel::before,
+    .panel::after {
+      content: "";
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-color: rgba(224, 86, 253, .85);
+      pointer-events: none;
+    }
+    .panel::before { top: 14px; left: 14px; border-top: 4px solid; border-left: 4px solid; }
+    .panel::after { top: 14px; right: 14px; border-top: 4px solid; border-right: 4px solid; }
+    .corner-bottom-left,
+    .corner-bottom-right {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      bottom: 14px;
+      pointer-events: none;
+      border-color: rgba(224, 86, 253, .85);
+    }
+    .corner-bottom-left { left: 14px; border-bottom: 4px solid; border-left: 4px solid; }
+    .corner-bottom-right { right: 14px; border-bottom: 4px solid; border-right: 4px solid; }
+    .page { display: none; animation: fade .25s ease both; }
+    .page.active { display: block; }
+    @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .center { text-align: center; }
+    .title {
+      font-size: clamp(32px, 5.5vw, 54px);
+      line-height: 1.25;
+      font-weight: 900;
+      letter-spacing: .02em;
+      margin-bottom: clamp(18px, 3vw, 28px);
+      text-shadow: 0 0 18px rgba(255, 255, 255, .16);
+    }
+    .subtitle {
+      font-size: clamp(17px, 2.6vw, 25px);
+      color: #8bf7ff;
+      font-weight: 800;
+      line-height: 1.55;
+      margin-bottom: clamp(22px, 4vw, 34px);
+      text-shadow: 0 0 12px rgba(0, 242, 254, .32);
+    }
+    .desc {
+      width: min(100%, 720px);
+      margin: 0 auto clamp(26px, 4.5vw, 44px);
+      font-size: clamp(15px, 2.1vw, 19px);
+      line-height: 1.85;
+      color: #e2e8f0;
+    }
+    .btn {
+      appearance: none;
+      border: 1px solid rgba(0, 242, 254, .72);
+      background: rgba(12, 10, 35, .9);
+      color: #f8fafc;
+      font-weight: 800;
+      font-size: clamp(15px, 2.1vw, 19px);
+      line-height: 1.45;
+      padding: 15px 22px;
+      min-height: 54px;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(0, 242, 254, .22);
+      clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px);
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    .btn:hover, .btn:focus-visible { transform: translateY(-1px); box-shadow: 0 0 20px rgba(0, 255, 178, .35); background: rgba(25, 22, 65, .95); }
+    .btn-primary { width: min(100%, 420px); }
+    .station {
+      color: #e879f9;
+      text-align: center;
+      font-size: clamp(20px, 3.4vw, 34px);
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+    .progress {
+      width: min(420px, 72%);
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      margin: 0 auto clamp(22px, 4vw, 34px);
+      overflow: hidden;
+    }
+    .progress span { display: block; height: 100%; background: #00f2fe; border-radius: inherit; box-shadow: 0 0 14px rgba(0,242,254,.7); }
+    .question {
+      width: min(100%, 840px);
+      margin: 0 auto clamp(18px, 3.8vw, 32px);
+      color: #fff;
+      text-align: center;
+      font-size: clamp(17px, 2.6vw, 24px);
+      font-weight: 800;
+      line-height: 1.65;
+    }
+    .options {
+      width: min(100%, 880px);
+      margin: 0 auto;
+      display: grid;
+      gap: clamp(10px, 2vw, 16px);
+    }
+    .option {
+      width: 100%;
+      text-align: left;
+      min-height: unset;
+      padding: clamp(13px, 2.2vw, 18px) clamp(15px, 2.5vw, 22px);
+      font-size: clamp(14px, 2.1vw, 17px);
+      font-weight: 700;
+    }
+    .nav-row {
+      margin-top: clamp(18px, 3vw, 28px);
+      display: flex;
+      justify-content: center;
+    }
+    .btn-back { min-width: 170px; border-color: rgba(255,255,255,.28); color: #e5e7eb; }
+    .result-kicker {
+      color: #00ffb2;
+      text-align: center;
+      font-weight: 900;
+      font-size: clamp(16px, 2.3vw, 20px);
+      margin-bottom: 14px;
+    }
+    .result-title {
+      text-align: center;
+      color: #f472b6;
+      font-size: clamp(22px, 3.6vw, 34px);
+      font-weight: 900;
+      line-height: 1.45;
+      margin-bottom: clamp(16px, 3vw, 26px);
+      white-space: pre-line;
+    }
+    .result-card {
+      width: min(100%, 860px);
+      margin: 0 auto;
+      border: 1px solid rgba(224, 86, 253, .42);
+      background: rgba(6, 4, 20, .94);
+      box-shadow: 0 0 14px rgba(224, 86, 253, .18);
+      padding: clamp(18px, 3vw, 28px);
+      color: #fff;
+      font-size: clamp(15px, 2.2vw, 18px);
+      line-height: 1.85;
+      white-space: pre-line;
+    }
+    .urgency {
+      width: min(100%, 820px);
+      margin: clamp(18px, 3vw, 26px) auto clamp(16px, 3vw, 24px);
+      text-align: center;
+      color: #ffd085;
+      font-size: clamp(15px, 2.2vw, 18px);
+      line-height: 1.65;
+      font-weight: 900;
+    }
+    .result-actions {
+      width: min(100%, 860px);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: .34fr .66fr;
+      gap: 14px;
+    }
+    .btn-cta { border-color: rgba(0,242,254,.78); }
+    .btn-restart { border-color: rgba(255,255,255,.28); }
+    .hidden { display: none !important; }
+    @media (max-width: 720px) {
+      .quiz-shell { min-height: auto; padding: 10px; align-items: flex-start; }
+      .panel {
+        min-height: auto;
+        padding: 30px 18px 24px;
+      }
+      .desc { margin-bottom: 24px; }
+      .result-actions { grid-template-columns: 1fr; }
+      .btn { width: 100%; }
+    }
+    @media (max-width: 420px) {
+      .quiz-shell { padding: 8px; }
+      .panel { padding: 26px 14px 20px; }
+      .title { font-size: 29px; }
+      .subtitle { font-size: 16px; }
+      .desc { font-size: 14px; line-height: 1.75; }
+      .station { font-size: 19px; }
+      .question { font-size: 16px; line-height: 1.55; }
+      .option { font-size: 13.5px; line-height: 1.55; padding: 12px 13px; }
+      .result-card { font-size: 14px; line-height: 1.75; }
+    }
+  </style>
+</head>
+<body>
+  <main class="quiz-shell">
+    <section class="panel" aria-live="polite">
+      <span class="corner-bottom-left"></span>
+      <span class="corner-bottom-right"></span>
 
+      <div id="page-home" class="page active center">
+        <h1 class="title">🛸 時空登機證</h1>
+        <div class="subtitle">解鎖你的「未來產品引路人」屬性</div>
+        <p class="desc">數位時代的核心秘密，其實藏在你的日常直覺裡。<br>只需 30 秒，解鎖你的數位天賦，展開驚艷的未來航程！</p>
+        <button class="btn btn-primary" type="button" onclick="startQuiz()">驗證數位 DNA（開始測驗）</button>
+      </div>
+
+      <div id="page-quiz" class="page">
+        <div class="station" id="station"></div>
+        <div class="progress"><span id="progressBar"></span></div>
+        <div class="question" id="question"></div>
+        <div class="options" id="options"></div>
+        <div class="nav-row">
+          <button id="backBtn" class="btn btn-back" type="button" onclick="goBack()">◀ 返回上一步</button>
+        </div>
+      </div>
+
+      <div id="page-result" class="page">
+        <div class="result-kicker">🛸 時空登機認證成功 🛸</div>
+        <div class="result-title" id="resultTitle"></div>
+        <div class="result-card" id="resultDesc"></div>
+        <div class="urgency" id="resultUrgency"></div>
+        <div class="result-actions">
+          <button class="btn btn-cta" type="button" onclick="openCourse()" id="resultBtn"></button>
+          <button class="btn btn-restart" type="button" onclick="restartQuiz()">🔄 再測一次</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const quizData = {
+      questions: [
+        {
+          station: "【航程第一站】日常 App 體驗",
+          question: "Q1. 當你下載了一個新 App，一打開卻發現找不到「關閉廣告」的 X 按鈕時，你的第一反應是？",
+          options: [
+            { key: "A", text: "A. 流程邏輯控：「這動線太不貼心了吧！背後運作邏輯不及格！」" },
+            { key: "B", text: "B. 視覺強迫症：「這個 X 按鈕配色跟背景一模一樣是認真的嗎？好想幫它重新排版...」" },
+            { key: "C", text: "C. 點子爆炸狂：「如果這邊改成用雙擊螢幕略過，絕對比現在這個設計帥多了！」" }
+          ]
+        },
+        {
+          station: "【航程第二站】數位生活痛點",
+          question: "Q2. 跟朋友約聚餐，在用手機看網頁菜單時，你最無法忍受哪件事情？",
+          options: [
+            { key: "A", text: "A. 數據混亂派：菜單沒有分類，價格 and 品項混在一起，點個餐還要上下比對、算價錢，超級沒效率。" },
+            { key: "B", text: "B. 畫面崩壞派：圖片加載不出來、排版字體跑位、食物照片拍得很醜，讓人瞬間失去食慾。" },
+            { key: "C", text: "C. 操作卡頓派：點按鈕沒反應、跳轉超慢，想放大看一下內容還會整頁死機。" }
+          ]
+        },
+        {
+          station: "【航程第三站】出國旅遊規劃",
+          question: "Q3. 終於要和朋友出國畢業旅行了！在出發前規劃行程時，你通常扮演什麼樣的角色？",
+          options: [
+            { key: "A", text: "A. 行程表魔王：負責把景點、美食、交通轉乘排進 Notion，時程精準、講求動線順暢不繞路。" },
+            { key: "B", text: "B. 視覺與打卡擔當：負責搜集最新最美、拍起來最好看的網美咖啡廳或私房景點，確保整趟旅程的視覺質感最高。" },
+            { key: "C", text: "C. 現場神 carry 機動流：懶得看密密麻麻的行程，但到現場時方向感極佳，遇到突發狀況能一秒變出超酷的新點子。" }
+          ]
+        }
+      ],
+      results: {
+        A: {
+          title: "【分析報告 A】邏輯爆棚體驗大師\n(UX 潛力股)",
+          desc: "🌌 特質分析：\n你擁有超強的同理心與邏輯思維！你排旅程重視的「動線流暢」、看 App 重視的「運作邏輯」，正是設計一款好用產品必備的 UX 核心能力。\n\n🚀 精準課程推薦：\n你的特質跟清大 UI/UX 班的【UX 使用者研究與設計思維】完美適配！今年課程首度結合 AI 實作，教你用 AI 像排旅遊動線一樣，絲滑地梳理產品邏輯！",
+          urgency: "⚡ 限時報名：清大生限定，免費（僅收2500元保證金）！報名至 6/8 截止，別讓天賦睡著了！",
+          btn: "🚀 領取時空特等席，立刻報名課程！"
+        },
+        B: {
+          title: "【分析報告 B】直覺美感流大師\n(UI 潛力股)",
+          desc: "🌌 特質分析：\n你對美感、排版、視覺氛圍有著極度敏銳的雷達！你挑選的打卡景點絕對是視覺焦點。你天生就知道怎麼用視覺包裝去打中人心，是把數位產品變漂亮的「畫面魔術師」。\n\n🚀 精準課程推薦：\n你的特質跟清大 UI/UX 班的【Figma UI 設計工具實作】完美適配！今年課程首度結合 AI 工具，教你如何用 AI 快速捕捉頂級排版與配色靈感，把美感轉化為高產值技能！無理工背景也能上手！",
+          urgency: "⚡ 限時報名：清大生限定，免費（僅收2500元保證金）！報名至 6/8 截止，給自己一個跨界機會！",
+          btn: "🎨 領取時空特等席，立刻報名課程！"
+        },
+        C: {
+          title: "【分析報告 C】突破框架產品發明家\n(UI/UX 全能雙棲)",
+          desc: "🌌 特質分析：\n你腦袋裡充滿彈性與各種點子，既能在現場帶給夥伴完美的體驗（UX），又熱愛生活中各種精美的新鮮事物（UI）！你是能在未知環境中創造驚喜的「全能產品造物主」。\n\n🚀 精準課程推薦：\n你的特質跟清大 UI/UX 班的【App/Web Redesign 小組專題與成果發表】完美適配！這門課能讓你從零到有跟夥伴一起做出屬於自己的求職作品集，還能學到最新 AI 輔助設計流程！",
+          urgency: "⚡ 限時報名：清大生限定，免費（僅收2500元保證金）！報名至 6/8 截止，立刻動手點擊參加！",
+          btn: "💎 領取時空特等席，立刻報名課程！"
+        }
+      }
+    };
+
+    let currentIndex = 0;
+    let score = { A: 0, B: 0, C: 0 };
+    let selectedHistory = [];
+
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function startQuiz() {
+      score = { A: 0, B: 0, C: 0 };
+      selectedHistory = [];
+      currentIndex = 0;
+      renderQuestion();
+      showPage('page-quiz');
+    }
+
+    function renderQuestion() {
+      const q = quizData.questions[currentIndex];
+      document.getElementById('station').textContent = q.station;
+      document.getElementById('question').textContent = q.question;
+      document.getElementById('progressBar').style.width = `${((currentIndex + 1) / quizData.questions.length) * 100}%`;
+      document.getElementById('backBtn').classList.toggle('hidden', currentIndex === 0);
+
+      const options = document.getElementById('options');
+      options.innerHTML = '';
+      q.options.forEach(opt => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn option';
+        button.textContent = opt.text;
+        button.onclick = () => selectOption(opt.key);
+        options.appendChild(button);
+      });
+    }
+
+    function selectOption(key) {
+      selectedHistory.push({ index: currentIndex, key });
+      score[key] += 1;
+      if (currentIndex < quizData.questions.length - 1) {
+        currentIndex += 1;
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function goBack() {
+      if (selectedHistory.length === 0) return;
+      const last = selectedHistory.pop();
+      if (score[last.key] > 0) score[last.key] -= 1;
+      currentIndex = last.index;
+      renderQuestion();
+    }
+
+    function showResult() {
+      const maxVal = Math.max(score.A, score.B, score.C);
+      let finalResult;
+      if (score.C === maxVal || (score.A === score.B && score.A === score.C)) {
+        finalResult = 'C';
+      } else if (score.A === maxVal) {
+        finalResult = 'A';
+      } else {
+        finalResult = 'B';
+      }
+      const data = quizData.results[finalResult];
+      document.getElementById('resultTitle').textContent = data.title;
+      document.getElementById('resultDesc').textContent = data.desc;
+      document.getElementById('resultUrgency').textContent = data.urgency;
+      document.getElementById('resultBtn').textContent = data.btn;
+      showPage('page-result');
+    }
+
+    function restartQuiz() {
+      score = { A: 0, B: 0, C: 0 };
+      selectedHistory = [];
+      currentIndex = 0;
+
+      // 回到首頁，而不是直接進入第一題
+      showPage('page-home');
+    }
+
+    function openCourse() {
+      window.open('https://ccd.nthu.edu.tw/event/1285', '_blank', 'noopener,noreferrer');
+    }
+  </script>
+</body>
+</html>
