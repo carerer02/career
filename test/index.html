@@ -65,9 +65,9 @@
 
     <!-- Floating Audio Control & Progress bar wrapper -->
     <div class="fixed top-4 right-4 z-50 flex items-center gap-3">
-        <!-- 調整初始靜音圖示為 fa-volume-mute -->
+        <!-- 將初始音效圖示恢復為 fa-volume-up 代表開啟 -->
         <button id="soundToggle" onclick="toggleSound()" class="glass-panel w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all border border-gray-700 hover:border-cyan-400">
-            <i id="soundIcon" class="fas fa-volume-mute"></i>
+            <i id="soundIcon" class="fas fa-volume-up"></i>
         </button>
     </div>
 
@@ -106,8 +106,7 @@
                     解鎖你的「隱藏設計人格」！
                 </h1>
                 <p class="text-gray-400 text-sm md:text-base max-w-md mx-auto">
-                    30 秒用日常直覺，測出你的產品造物主屬性。<br>
-                    <span class="text-yellow-400 text-xs font-bold font-cyber mt-1 block">★ 清大推廣：UI/UX產業入門應用班 精準測試</span>
+                    30 秒用日常直覺，測出你的產品造物主屬性。
                 </p>
             </div>
 
@@ -171,7 +170,7 @@
                 <!-- Radar Chart Canvas container -->
                 <div class="glass-panel p-5 rounded-2xl flex flex-col items-center justify-center relative min-h-[300px]">
                     <span class="text-xs md:text-sm font-cyber font-bold text-cyan-400 absolute top-4 left-4 flex items-center gap-1.5">
-                        <i class="fa-solid fa-microchip text-pink-500 animate-pulse"></i> 天賦蜘蛛圖分析
+                        <i class="fa-solid fa-microchip text-pink-500 animate-pulse"></i> 天賦蜘蛛圖 analysis
                     </span>
                     <canvas id="radarChart" class="w-full max-w-[260px] aspect-square mt-6"></canvas>
                 </div>
@@ -245,7 +244,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 <!-- Apply Button -->
                 <a href="https://ccd.nthu.edu.tw/event/1285" target="_blank" onclick="playSound('win')" class="px-6 py-4 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-black font-cyber rounded-xl text-center text-sm md:text-base tracking-wider neon-shadow-yellow hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-rocket animate-bounce"></i> 領取免費名額，立刻報名課程！
+                    <i class="fa-solid fa-rocket animate-bounce"></i> 免費課程立即報名！
                 </a>
                 <!-- Copy/Share Link -->
                 <button onclick="copyLink()" class="px-6 py-4 glass-panel border border-gray-700 hover:border-pink-500 hover:text-pink-400 font-bold rounded-xl text-center text-sm md:text-base tracking-wider hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
@@ -270,8 +269,8 @@
     </div>
 
     <script>
-        // 將音效初始狀態變更為關閉 (false)
-        let soundEnabled = false;
+        // 將音效初始狀態變更為開啟 (true)
+        let soundEnabled = true;
 
         // Custom Synthesized Audio Generator (Web Audio API)
         // No external audio dependencies! Completely self-contained
