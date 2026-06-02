@@ -65,8 +65,9 @@
 
     <!-- Floating Audio Control & Progress bar wrapper -->
     <div class="fixed top-4 right-4 z-50 flex items-center gap-3">
+        <!-- 調整初始靜音圖示為 fa-volume-mute -->
         <button id="soundToggle" onclick="toggleSound()" class="glass-panel w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all border border-gray-700 hover:border-cyan-400">
-            <i id="soundIcon" class="fas fa-volume-up"></i>
+            <i id="soundIcon" class="fas fa-volume-mute"></i>
         </button>
     </div>
 
@@ -269,8 +270,8 @@
     </div>
 
     <script>
-        // Sound toggle state
-        let soundEnabled = true;
+        // 將音效初始狀態變更為關閉 (false)
+        let soundEnabled = false;
 
         // Custom Synthesized Audio Generator (Web Audio API)
         // No external audio dependencies! Completely self-contained
