@@ -335,8 +335,8 @@
 </head>
 <body>
 
-    <!-- 修改：音效開關預設顯示為靜音 (🔇) -->
-    <button id="sound-toggle" class="sound-toggle" onclick="toggleSound()">🔇</button>
+    <!-- 修改：音效開關預設顯示為開啟 (🔊) -->
+    <button id="sound-toggle" class="sound-toggle" onclick="toggleSound()">🔊</button>
 
     <!-- 遊戲封面首頁 -->
     <div class="container" id="cover-page">
@@ -439,7 +439,7 @@
         let currentLevelIndex = 0;
         let correctFoundInLevel = 0;
         let targetCorrectInLevel = 0;
-        let isSoundEnabled = false; // 修改：音效預設改為關閉 (false)
+        let isSoundEnabled = true; // 修改：音效預設改為開啟 (true)
 
         // 🎵 新增：切換音效開關邏輯
         function toggleSound() {
