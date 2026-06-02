@@ -168,9 +168,11 @@
             <!-- Visual Hexagon Radar & Description Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                 <!-- Radar Chart Canvas container -->
-                <div class="glass-panel p-4 rounded-2xl flex flex-col items-center justify-center relative">
-                    <span class="text-[10px] font-cyber text-gray-400 absolute top-3 left-3"><i class="fa-solid fa-microchip mr-1"></i> 天賦蜘蛛圖</span>
-                    <canvas id="radarChart" class="w-full max-w-[240px] aspect-square"></canvas>
+                <div class="glass-panel p-5 rounded-2xl flex flex-col items-center justify-center relative min-h-[300px]">
+                    <span class="text-xs md:text-sm font-cyber font-bold text-cyan-400 absolute top-4 left-4 flex items-center gap-1.5">
+                        <i class="fa-solid fa-microchip text-pink-500 animate-pulse"></i> 天賦蜘蛛圖分析
+                    </span>
+                    <canvas id="radarChart" class="w-full max-w-[260px] aspect-square mt-6"></canvas>
                 </div>
 
                 <!-- Personality Description Card -->
@@ -399,7 +401,7 @@
             },
             ui: {
                 title: "🏆 直覺美感流大師（UI 潛力股）",
-                desc: "你對美感、排版、視覺氛圍有著極度敏銳的雷達！你挑選的打卡景點絕對是視覺焦點。你天生就知道怎麼用視覺包裝去打中人心，是把數位產品變漂亮的「畫面魔術師」。",
+                desc: "你對美感、排版、視覺氛圍有著極度敏閱的雷達！你挑選的打卡景點絕對是視覺焦點。你天生就知道怎麼用視覺包裝去打中人心，是把數位產品變漂亮的「畫面魔術師」。",
                 pitch: "你的特質跟清大 UI/UX 班的【Figma UI 設計工具實作】完美適配！今年課程首度結合 AI 工具，教你如何用 AI 快速捕捉頂級排版與配色靈感，把你的美感轉化為業界高產值技能！無理工或寫程式背景也能輕鬆上手！",
                 radar: { empathy: 75, logic: 58, strategy: 50, execution: 82, creativity: 92, aesthetics: 98 },
                 jobType: "UI User Interface Designer",
@@ -562,7 +564,7 @@
             document.getElementById('page-start').classList.add('hidden');
             document.getElementById('page-quiz').classList.remove('hidden');
             currentQuizIndex = 0;
-            scoreCounter = { ux: 0, ui: 0, hybrid: 0 };
+            scoreCounter = {ux: 0, ui: 0, hybrid: 0};
             renderQuestion();
         }
 
@@ -574,7 +576,8 @@
             document.getElementById('questionNum').innerText = data.stage;
             document.getElementById('questionText').innerText = data.question;
             
-            const percentage = Math.round(((currentQuizIndex) / quizData.length) * 100) || 33;
+            // 修正進度條邏輯：將 0%/33%/66% 改為 33% -> 67% -> 100% 的進度跳轉
+            const percentage = Math.round(((currentQuizIndex + 1) / quizData.length) * 100);
             document.getElementById('progressBar').style.width = percentage + '%';
             document.getElementById('progressPercentage').innerText = percentage + '%';
 
@@ -664,7 +667,7 @@
                 rc.clearRect(0, 0, size, size);
                 const cx = size / 2;
                 const cy = size / 2;
-                const r = size * 0.32; // 稍微調小雷達圖半徑，留出更多邊緣空間給大文字
+                const r = size * 0.28; // 稍微調小雷達圖半徑，留出更多邊緣空間給大文字標籤
                 const sides = labels.length;
 
                 // 1. Draw pentagram/hexagon concentric support lines
@@ -693,12 +696,12 @@
                 }
                 rc.stroke();
 
-                // 3. Draw Labels text
-                rc.fillStyle = '#f8fafc'; // 改為高亮度白灰色
-                rc.font = 'bold 15px "Noto Sans TC", sans-serif'; // 字體由 11px 加大至 15px
+                // 3. Draw Labels text (大幅放大文字並調整高對比度)
+                rc.fillStyle = '#f8fafc'; // 亮白灰色
+                rc.font = 'bold 17px "Noto Sans TC", sans-serif'; // 從原本的 15px 放大至 17px 粗體
                 rc.textAlign = 'center';
                 rc.textBaseline = 'middle';
-                const padding = 24; // 增加間距，確保大文字不會與雷達圖頂點重疊
+                const padding = 26; // 增加間距避免大字體與頂點重疊
                 for (let i = 0; i < sides; i++) {
                     const angle = (Math.PI * 2 / sides) * i - Math.PI / 2;
                     const x = cx + (r + padding) * Math.cos(angle);
