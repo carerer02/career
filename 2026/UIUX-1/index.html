@@ -193,10 +193,12 @@
       width: min(100%, 860px);
       margin: 0 auto;
       display: grid;
-      grid-template-columns: .34fr .66fr;
+      /* 依據最寬、中等寬、較小寬設計 2.2fr : 1.5fr : 1fr 黃金格律比例 */
+      grid-template-columns: 2.2fr 1.5fr 1fr;
       gap: 14px;
     }
     .btn-cta { border-color: rgba(0,242,254,.78); }
+    .btn-share { border-color: rgba(224, 86, 253, .78); } /* 科幻霓虹桃紫配色 */
     .btn-restart { border-color: rgba(255,255,255,.28); }
     .hidden { display: none !important; }
     @media (max-width: 720px) {
@@ -252,6 +254,7 @@
         <div class="urgency" id="resultUrgency"></div>
         <div class="result-actions">
           <button class="btn btn-cta" type="button" onclick="openCourse()" id="resultBtn"></button>
+          <button class="btn btn-share" type="button" onclick="copyShareLink()">🔗 複製分享給其他人</button>
           <button class="btn btn-restart" type="button" onclick="restartQuiz()">🔄 再測一次</button>
         </div>
       </div>
@@ -454,6 +457,43 @@
 
     function openCourse() {
       window.open('https://ccd.nthu.edu.tw/event/1285', '_blank', 'noopener,noreferrer');
+    }
+
+    // --- 🔗 專屬複製分享連結功能 (防 iFrame 限制相容演算法) ---
+    function copyShareLink() {
+      const shareUrl = "https://carerer02.github.io/career/2026/UIUX-1/";
+      
+      // 使用最相容於 Iframe 與行動裝置瀏覽器的 textarea 隱藏暫存法
+      const tempInput = document.createElement("textarea");
+      tempInput.value = shareUrl;
+      tempInput.style.top = "0";
+      tempInput.style.left = "0";
+      tempInput.style.position = "fixed"; // 避免行動端頁面滾動
+      document.body.appendChild(tempInput);
+      
+      tempInput.focus();
+      tempInput.select();
+      
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          const shareBtn = document.querySelector('.btn-share');
+          const originalText = shareBtn.innerHTML;
+          
+          // 提供視覺回饋
+          shareBtn.innerHTML = "✅ 複製成功！";
+          shareBtn.style.borderColor = "rgba(0, 255, 178, .78)"; // 短暫變為綠色
+          
+          setTimeout(() => {
+            shareBtn.innerHTML = originalText;
+            shareBtn.style.borderColor = "rgba(224, 86, 253, .78)"; // 還原為霓虹桃紫
+          }, 1500);
+        }
+      } catch (err) {
+        console.error('Oops, unable to copy link', err);
+      }
+      
+      document.body.removeChild(tempInput);
     }
   </script>
 </body>
