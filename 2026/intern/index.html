@@ -235,6 +235,32 @@
             display: none !important;
         }
 
+        /* 💡 新增：小按鈕樣式 (用於複製分享) */
+        .btn-small {
+            background: #E5E7EB; /* 淺灰色 */
+            color: #111827;
+            border: 2px solid #111827;
+            padding: 0.5rem 0.8rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 2px 2px 0px #111827;
+            transition: all 0.15s ease;
+            margin-right: 0.5rem;
+        }
+
+        .btn-small:hover {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0px #111827;
+            background: #D1D5DB;
+        }
+
+        .btn-small:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px #111827;
+        }
+
         /* 🎵 新增：音效開關按鈕樣式 */
         .sound-toggle {
             position: fixed;
@@ -309,8 +335,8 @@
 </head>
 <body>
 
-    <!-- 新增：音效開關按鈕 -->
-    <button id="sound-toggle" class="sound-toggle" onclick="toggleSound()">🔊</button>
+    <!-- 修改：音效開關預設顯示為靜音 (🔇) -->
+    <button id="sound-toggle" class="sound-toggle" onclick="toggleSound()">🔇</button>
 
     <!-- 遊戲封面首頁 -->
     <div class="container" id="cover-page">
@@ -362,10 +388,16 @@
                🎒 <strong>準備裝備</strong><br>1張照片+1篇心得+證明+切結書<br><br>
                🎯 <strong>報名期限</strong><br>07/01-09/15 職發組官網投遞
             </p>
+            
             <!-- 雙按鈕並排：改為 flex, horizontal 排列, 互換位置並調整大小 -->
-            <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.5rem; flex-wrap: nowrap;">
+            <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: nowrap; margin-bottom: 0.8rem;">
                 <a href="https://ccd.nthu.edu.tw/news/529" target="_blank" class="btn" style="background: #FDE047; padding: 0.8rem 1rem; font-size: 1rem; flex: 1; text-align: center; white-space: nowrap;">詳細報名 🔗</a>
                 <button class="btn" onclick="restartGame()" style="padding: 0.8rem 1rem; font-size: 1rem; flex: 1; white-space: nowrap;">再玩一次 🎮</button>
+            </div>
+
+            <!-- 新增：複製分享按鈕區塊 (移至最下方) -->
+            <div>
+                <button class="btn-small" onclick="copyShareLink(this)">🔗 複製分享給其他人</button>
             </div>
         </div>
     </div>
@@ -407,7 +439,7 @@
         let currentLevelIndex = 0;
         let correctFoundInLevel = 0;
         let targetCorrectInLevel = 0;
-        let isSoundEnabled = true; // 新增：音效開關狀態變數
+        let isSoundEnabled = false; // 修改：音效預設改為關閉 (false)
 
         // 🎵 新增：切換音效開關邏輯
         function toggleSound() {
@@ -415,13 +447,13 @@
             const toggleBtn = document.getElementById('sound-toggle');
             if (isSoundEnabled) {
                 toggleBtn.innerText = '🔊';
-                playSound('sound-click'); // 開啟時播個提示音
+                playSound('sound-click'); 
             } else {
                 toggleBtn.innerText = '🔇';
             }
         }
 
-        // 🎵 音效播放共用函數 (已加入靜音判斷)
+        // 🎵 音效播放共用函數
         function playSound(soundId) {
             if (!isSoundEnabled) return; // 如果靜音模式開啟，則直接返回不播放
             const sound = document.getElementById(soundId);
@@ -520,6 +552,41 @@
             document.getElementById('cover-page').classList.remove('hidden');
             // 4. 重置關卡進度
             currentLevelIndex = 0;
+            
+            // 5. 重置複製按鈕文字 (如果有按過的話)
+            const copyBtn = document.querySelector('.btn-small');
+            if(copyBtn) copyBtn.innerText = '🔗 複製分享給其他人';
+        }
+
+        // 新增：複製分享連結功能
+        function copyShareLink(btnElement) {
+            const shareUrl = "https://carerer02.github.io/career/2026/intern/";
+            
+            // 建立一個臨時的隱藏 input 來執行複製動作 (相容性較佳的作法)
+            const tempInput = document.createElement("input");
+            tempInput.value = shareUrl;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            
+            try {
+                // 執行複製指令
+                document.execCommand("copy");
+                // 改變按鈕文字給予視覺回饋
+                const originalText = btnElement.innerText;
+                btnElement.innerText = "✅ 已複製網址！";
+                btnElement.style.background = "#D9F99D"; // 變成淺綠色
+                
+                // 2秒後恢復原狀
+                setTimeout(() => {
+                    btnElement.innerText = originalText;
+                    btnElement.style.background = "#E5E7EB";
+                }, 2000);
+            } catch (err) {
+                console.error("複製失敗:", err);
+            } finally {
+                // 移除臨時 input
+                document.body.removeChild(tempInput);
+            }
         }
     </script>
 </body>
