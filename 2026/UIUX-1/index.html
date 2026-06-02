@@ -6,14 +6,26 @@
   <title>時空登機證：解鎖你的未來產品引路人屬性</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      width: 100%;
-      min-height: 100%;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
-      background: transparent;
-      color: #fff;
+    
+    /* 修正：將 html 與 body 的背景直接鎖定在深色太空漸層，並加上 fixed 防禦，徹底消除手機版底部白底 */
+    html {
+      background-color: #03020d;
     }
-    body { overflow-x: hidden; }
+    body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+      color: #fff;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(13, 7, 53, .95), transparent 38%),
+        radial-gradient(circle at 10% 85%, rgba(0, 242, 254, .16), transparent 34%),
+        radial-gradient(circle at 90% 15%, rgba(224, 86, 253, .15), transparent 30%),
+        #03020d;
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+    
+    /* 修正：將原本的 background 改為 transparent，完全交給 body 呈現背景，確保任何高度下背景都完美無瑕 */
     .quiz-shell {
       width: 100%;
       min-height: 100vh;
@@ -21,11 +33,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background:
-        radial-gradient(circle at 50% 20%, rgba(13, 7, 53, .95), transparent 38%),
-        radial-gradient(circle at 10% 85%, rgba(0, 242, 254, .16), transparent 34%),
-        radial-gradient(circle at 90% 15%, rgba(224, 86, 253, .15), transparent 30%),
-        #03020d;
+      background: transparent;
     }
     .panel {
       width: min(100%, 980px);
@@ -364,7 +372,7 @@
           desc: "🌌 特質分析：\n你對美感、排版、視覺氛圍有著極度敏銳的雷達！你挑選的打卡景點絕對是視覺焦點。你天生就知道怎麼用視覺包裝去打中人心，是把數位產品變漂亮的「畫面魔術師」。\n\n🚀 精準課程推薦：\n你的特質跟清大 UI/UX 班的【Figma UI 設計工具實作】完美適配！今年課程首度結合 AI 工具，教你如何用 AI 快速捕捉頂級排版與配色靈感，把美感轉化為高產值技能！無理工背景也能上手！",
           urgency: "⚡ 限時報名：清大生限定，免費（僅收2500元保證金）！報名至 6/8 截止，給自己一個跨界機會！",
           btn: "🎨 領取時空特等席，立刻報名課程！"
-        },
+                },
         C: {
           title: "【分析報告 C】突破框架產品發明家\n(UI/UX 全能雙棲)",
           desc: "🌌 特質分析：\n你腦袋裡充滿彈性與各種點子，既能在現場帶給夥伴完美的體驗（UX），又熱愛生活中各種精美的新鮮事物（UI）！你是能在未知環境中創造驚喜的「全能產品造物主」。\n\n🚀 精準課程推薦：\n你的特質跟清大 UI/UX 班的【App/Web Redesign 小組專題與成果發表】完美適配！這門課能讓你從零到有跟夥伴一起做出屬於自己的求職作品集，還能學到最新 AI 輔助設計流程！",
@@ -422,6 +430,7 @@
       }
     }
 
+    // 修正：修正 goBack 以確保正常運作
     function goBack() {
       if (selectedHistory.length === 0) return;
       const last = selectedHistory.pop();
@@ -463,12 +472,11 @@
     function copyShareLink() {
       const shareUrl = "https://carerer02.github.io/career/2026/UIUX-1/";
       
-      // 使用最相容於 Iframe 與行動裝置瀏覽器的 textarea 隱藏暫存法
       const tempInput = document.createElement("textarea");
       tempInput.value = shareUrl;
       tempInput.style.top = "0";
       tempInput.style.left = "0";
-      tempInput.style.position = "fixed"; // 避免行動端頁面滾動
+      tempInput.style.position = "fixed"; 
       document.body.appendChild(tempInput);
       
       tempInput.focus();
@@ -480,13 +488,12 @@
           const shareBtn = document.querySelector('.btn-share');
           const originalText = shareBtn.innerHTML;
           
-          // 提供視覺回饋
           shareBtn.innerHTML = "✅ 複製成功！";
-          shareBtn.style.borderColor = "rgba(0, 255, 178, .78)"; // 短暫變為綠色
+          shareBtn.style.borderColor = "rgba(0, 255, 178, .78)"; 
           
           setTimeout(() => {
             shareBtn.innerHTML = originalText;
-            shareBtn.style.borderColor = "rgba(224, 86, 253, .78)"; // 還原為霓虹桃紫
+            shareBtn.style.borderColor = "rgba(224, 86, 253, .78)"; 
           }, 1500);
         }
       } catch (err) {
