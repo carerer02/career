@@ -1,1 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微光嚮導：實習故事收集</title>
+    <style>
+        /* =========================================
+           1. 全域變數與背景色調 (優化4：一三階段色調對調)
+        ========================================= */
+        :root {
+            --bg-top: #0F2027;    /* 初始為深邃星空夜色 */
+            --bg-bottom: #203A43; 
+            --mountain-back: #1F3038;
+            --mountain-front: #0D161A;
+            --panel-bg: rgba(255, 255, 255, 0.85);
+            --text-main: #5C4033;
+            --accent: #FF8A00;
+        }
 
+        /* 階段背景切換 */
+        body.stage-1 {
+            --bg-top: #0F2027;    /* 階段一：神祕夜空 */
+            --bg-bottom: #203A43;
+            --mountain-back: #1F3038;
+            --mountain-front: #0D161A;
+        }
+        body.stage-2 {
+            --bg-top: #2B1B54;    /* 階段二：夜間營火 */
+            --bg-bottom: #EE7752;
+            --mountain-back: #4A3A75;
+            --mountain-front: #2D204F;
+        }
+        body.stage-3 {
+            --bg-top: #FF9A9E;    /* 階段三：破曉迎來溫慢破曉夕陽 */
+            --bg-bottom: #FECFEF;
+            --mountain-back: #FFB3A7;
+            --mountain-front: #E88C7D;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Nunito', '微軟正黑體', sans-serif;
+            color: var(--text-main);
+            background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+            transition: background 1.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* CSS 繪製大自然山脈背景 */
+        .scenery {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 40%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .mountain {
+            position: absolute;
+            bottom: -10%;
+            border-radius: 50%;
+            transition: background 1.5s ease;
+        }
+        .m-back {
+            width: 120vw; height: 60vh; left: -10vw;
+            background: var(--mountain-back);
+        }
+        .m-front {
+            width: 80vw; height: 40vh; right: -10vw; bottom: -20%;
+            background: var(--mountain-front);
+        }
+
+        /* =========================================
+           2. 核心主版面與頂部導覽 (優化2：頂部按鈕)
+        ========================================= */
+        .top-nav {
+            position: absolute;
+            top: 25px;
+            right: 5%;
+            z-index: 100;
+            display: flex;
+            gap: 15px;
+        }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.85);
+            border: 2px solid #FFE082;
+            padding: 10px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-btn:hover {
+            background: #FFF;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+        /* 🔊 喇叭按鈕專屬特製樣式 */
+        .sound-active {
+            border-color: #4CAF50 !important;
+            background: #E8F5E9 !important;
+        }
+
+        .main-container {
+            width: 90%;
+            max-width: 1100px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* 左側：人物、錢包與寶箱背包 (優化1：寶箱系統) */
+        .left-panel {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+        }
+
+        .wallet-group {
+            position: absolute;
+            top: -160px;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .wallet {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            font-weight: bold;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 250px;
+        }
+        .wallet span { color: #D84315; font-size: 1.25rem; }
+
+        /* 可愛小寶箱背包按鈕 */
+        .chest-btn {
+            background: #8B4513;
+            color: #FFF;
+            border: 3px solid #FFE082;
+            padding: 10px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            box-shadow: 0 6px 0 #5c2e0b, 0 10px 20px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 250px;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .chest-btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 0px 0 #5c2e0b, 0 5px 10px rgba(0,0,0,0.2);
+        }
+
+        .character {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            display: block;
+            animation: breathe 3s ease-in-out infinite;
+            transition: filter 0.3s ease, transform 0.3s ease;
+            filter: drop-shadow(0 15px 15px rgba(0,0,0,0.2));
+        }
+        .character.glow {
+            filter: drop-shadow(0 0 35px #FFD700) brightness(1.25);
+            transform: scale(1.08);
+            animation: none;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        /* 右側：任務區 */
+        .right-panel {
+            width: 55%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end; /* 讓整體（包含框下方的按鈕）靠右對齊 */
+        }
+        .task-board {
+            background: var(--panel-bg);
+            border-radius: 30px;
+            padding: 35px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+            width: 100%;
+        }
+        .stage-title {
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin-bottom: 12px;
+            font-weight: 900;
+        }
+        .stage-desc {
+            font-size: 1.05rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .task-item {
+            background: #FFF;
+            border: 2px solid #FFE082;
+            border-radius: 15px;
+            padding: 18px 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+        }
+        .task-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(255,138,0,0.2);
+            background-color: #FFFDE7;
+        }
+        /* 優化1：已完成項目不鎖死，允許重複點擊查看 */
+        .task-item.completed {
+            background: #E8F5E9;
+            border-color: #81C784;
+            color: #2E7D32;
+        }
+
+        /* 第三階段完成時出現的稱號大標題 */
+        .congrats-text {
+            font-size: 1.25rem;
+            color: #D84315;
+            font-weight: 900;
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            background: #FFF8E1;
+            border-radius: 12px;
+            border: 2px dashed #FFB703;
+            display: none;
+        }
+
+        /* 🚪 右邊框下方的縮小並排按鈕區 */
+        .flow-control-area {
+            margin-top: 15px;
+            display: flex;
+            justify-content: flex-end; /* 靠右對齊 */
+            gap: 12px;
+            width: 100%;
+        }
+        .next-gate-btn {
+            background: linear-gradient(45deg, #FF8A00, #FFB703);
+            color: #FFF;
+            border: none;
+            padding: 12px 24px; /* 縮小尺寸 */
+            border-radius: 20px;
+            font-size: 0.95rem; /* 字體縮小 */
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #D84315;
+            display: none; /* 預設隱藏，打勾完才浮現 */
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .next-gate-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        /* =========================================
+           3. 彈出視窗 (Modal)
+        ========================================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background: #FFF;
+            padding: 30px;
+            border-radius: 25px;
+            max-width: 480px;
+            width: 85%;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            position: relative;
+        }
+        .modal-close-x {
+            position: absolute;
+            top: 15px; right: 20px;
+            font-size: 1.5rem; cursor: pointer; color: #AAA; font-weight: bold;
+        }
+        .modal-title {
+            color: var(--accent);
+            font-size: 1.4rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+        .modal-body {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: left;
+            background: #FFFDE7;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #FFE082;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        .modal-btn {
+            background: var(--accent);
+            color: #FFF;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #D84315;
+        }
+
+        /* 飛行的光球 */
+        .flying-orb {
+            position: fixed;
+            width: 25px; height: 25px;
+            background: radial-gradient(circle, #FFF, #FFD700);
+            border-radius: 50%;
+            box-shadow: 0 0 20px #FFD700, 0 0 40px #FF8A00;
+            pointer-events: none;
+            z-index: 100;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgm" src="bgm.mp3" loop></audio>
+    <audio id="clickSe" src="click.mp3"></audio>
+
+    <div class="top-nav">
+        <button class="nav-btn" id="soundBtn" onclick="toggleSound()">🔇 音效：關</button>
+        <button class="nav-btn" onclick="goHome()">🏠 回首頁</button>
+        <button class="nav-btn" id="prevStageBtn" onclick="goToPrevStage()" style="display:none;">⬅️ 返回上一關</button>
+    </div>
+
+    <div class="scenery">
+        <div class="mountain m-back"></div>
+        <div class="mountain m-front"></div>
+    </div>
+
+    <div class="main-container">
+        
+        <div class="left-panel">
+            <div class="wallet-group">
+                <div class="wallet">
+                    <div>🎒 累積競賽獎金：<span id="money">0</span> 元</div>
+                    <div>💳 7-11商品卡：<span id="giftcard">0</span> 元</div>
+                </div>
+                <button class="chest-btn" onclick="openChest()">🧳 點開引路背包 (檢視道具)</button>
+            </div>
+            <img src="character.png" alt="角色" class="character" id="hero" onerror="this.onerror=null; this.src='https://via.placeholder.com/280x400/FFB3A7/FFF?text=透明背景人物圖';">
+        </div>
+
+        <div class="right-panel">
+            <div class="task-board">
+                <div class="stage-title" id="stageTitle">載入中...</div>
+                <div class="stage-desc" id="stageDesc">載入中...</div>
+                
+                <div id="taskList"></div>
+
+                <div id="congratsText" class="congrats-text"></div>
+            </div>
+
+            <div class="flow-control-area" id="gateArea">
+                <button class="next-gate-btn" id="nextGateBtn" onclick="executeGateAction()"></button>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal-content">
+            <span class="modal-close-x" onclick="closeModal()">×</span>
+            <div class="modal-title" id="modalTitle">任務說明</div>
+            <div class="modal-body" id="modalBody">內容載入中...</div>
+            <button class="modal-btn" onclick="closeModal()">收進背包</button>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // 🎯 核心自訂資料區
+        // =========================================================================
+        const gameData = [
+            {
+                title: "階段一：投稿準備",
+                desc: "將你的實習點滴化為火種。前50名通過資格審查者可獲得早鳥禮！",
+                rewardType: "giftcard",
+                rewardValue: 100, 
+                nextStageTrigger: "✨ 恭喜通過資格審查！點擊進入初選＆複選階段。",
+                tasks: [
+                    { 
+                        id: "s1_t1",
+                        menuText: "📸 實習相片與說明", 
+                        modalTitle: "✨ 要點提醒", 
+                        modalBody: "<b>照片格式：</b><br>原始檔jpg檔1張，建議1MB以上3MB以內，解析度300dpi以上，須於實習場域拍攝，有作者本人在內且能呈現實習情形為佳。<br><br><b>照片文字：</b><br>中文限20字；英文限40字元數，含空格及標點符號。" 
+                    },
+                    { 
+                        id: "s1_t2",
+                        menuText: "📝 實習心得故事 (中/英文限擇一投稿)", 
+                        modalTitle: "✨ 要點提醒", 
+                        modalBody: "<b>相片與文字搭配得宜（20%）<br>印象最深刻的故事(30%)<br>實習心得（25%）<br>對未來職涯發展的影響（25%）</b><br><br>盡情分享你在實習期間印象最深刻的故事、遇到的挑戰、如何克服，以及學校所學理論與實務的契合度！<br>*中文限400至500字以內，含標點符號。<br>*英文限500至1000字元數以內，含空格及標點符號。" 
+                    },
+                    { 
+                        id: "s1_t3",
+                        menuText: "📅 實習證明文件 (同一機構需滿 60 小時)", 
+                        modalTitle: "✨ 要點提醒", 
+                        modalBody: "<b>格式：</b><br>提供pdf or jpg檔，1MB內，實習機構 or 系所開立之證明文件（可明確辨識有實習事實），不限形式。<br><br><b>說明：</b><br>同一校外實習機構參與產業實習（不含教學實習、教育實習）累計時數達60（含）小時以上者。" 
+                    },
+                    { 
+                        id: "s1_t4",
+                        menuText: "📄 學生證與授權切結書", 
+                        modalTitle: "✨ 要點提醒", 
+                        modalBody: "請備妥橫式正面學生證、實習證明、以及簽名拍下的著作權授權同意書（PDF/JPG 皆可）。<br><br>必須使用清華 <b>Gapp 帳號</b>登入 Google 表單報名上傳！" 
+                    }
+                ]
+            },
+            {
+                title: "階段二：初選＆複選審查階段",
+                desc: "初選階段將選出前50% 作品進入複選階段！<br>複選獲得評審青睞！優選者參加總決賽，佳作將受邀出席總決賽。",
+                rewardType: "money",
+                rewardValue: 2000, 
+                nextStageTrigger: "🌟 成功奪得總決賽門票！點擊站上總決賽舞台。",
+                tasks: [
+                    { 
+                        id: "s2_t1",
+                        menuText: "🏆 角逐優選作品", 
+                        modalTitle: "🌟 複選榮耀", 
+                        modalBody: "初選前50%作品進入複選階段，複選將精選出優秀作品。<br><b>優選</b>可獲得獎金新臺幣2,000元！<br><b>佳作</b>可獲獎金新臺幣1,000元！<br><br>獲優選者，將解鎖出席總決賽現場簡報的終極任務。" 
+                    },
+                    { 
+                        id: "s2_t2",
+                        menuText: "📊 準備 3~7 頁簡報精華", 
+                        modalTitle: "🌟 簡報軍備", 
+                        modalBody: "獲優選者需出席總決賽。請將你的實習故事濃縮精煉，製作成<b>至少 3 頁、至多 7 頁</b>的簡報，準備在決賽現場進行 5 分鐘現場分享！<br><br><b>簡報結構完整與故事性(40%)<br>表達流暢(30%)<br>台風表現(30%)</b>" 
+                    }
+                ]
+            },
+            {
+                title: "階段三：總決賽巔峰對決",
+                desc: "115年11月20日總決賽暨頒頒獎典禮現場！在評審與觀眾面前展現最強的一面！",
+                rewardType: "money",
+                rewardValue: 7000, 
+                nextStageTrigger: "🚀 查看完整公告",
+                tasks: [
+                    { 
+                        id: "s3_t1",
+                        menuText: "🏗️ 簡報結構完整與故事性(40%)", 
+                        modalTitle: "🎉 決賽核心", 
+                        modalBody: "決賽評審評分佔比最高的是<b>簡報結構完整性(40%)</b>！確保你的實習歷程具備起承轉合與強烈的故事吸引力。" 
+                    },
+                    { 
+                        id: "s3_t2",
+                        menuText: "🎙️ 表達流暢(30%) + 台風表現(30%)", 
+                        modalTitle: "🎉 舞台魅力", 
+                        modalBody: "演練你的<b>表達流暢度(30%)</b>與現場<b>台風表現(30%)</b>。<br>現場還有觀眾預先報名參與的<b>最佳人氣票選活動</b>，全力爭取人氣獎吧！" 
+                    }
+                ]
+            }
+        ];
+
+        // =========================================================================
+        // ⚙️ 系統邏輯控制區
+        // =========================================================================
+        let currentStage = 0;
+        let totalMoney = 0;
+        let totalGiftcard = 0;
+        let collectedTaskIds = new Set();
+        let stageRewardsGranted = [false, false, false];
+        let isMuted = true; // 音效控制開關：預設關閉
+
+        const hero = document.getElementById('hero');
+        const taskList = document.getElementById('taskList');
+        const stageTitle = document.getElementById('stageTitle');
+        const stageDesc = document.getElementById('stageDesc');
+        const nextGateBtn = document.getElementById('nextGateBtn');
+        const prevStageBtn = document.getElementById('prevStageBtn');
+        const congratsText = document.getElementById('congratsText');
+        const gateArea = document.getElementById('gateArea');
+        const soundBtn = document.getElementById('soundBtn');
+        
+        const bgm = document.getElementById('bgm');
+        const clickSe = document.getElementById('clickSe');
+
+        const infoModal = document.getElementById('infoModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+
+        // 🔊 喇叭開關控制函式
+        function toggleSound() {
+            isMuted = !isMuted;
+            if (isMuted) {
+                soundBtn.innerText = "🔇 音效：關";
+                soundBtn.classList.remove('sound-active');
+                bgm.pause(); // 暫停背景音樂
+            } else {
+                soundBtn.innerText = "🔊 音效：開";
+                soundBtn.classList.add('sound-active');
+                bgm.play().catch(err => console.log("音樂播放受瀏覽器權限限制")); // 啟動背景音樂
+                // 🔊 移除切換開關時的 playSe() 觸發，確保此按鈕不發聲
+            }
+        }
+
+        // 🎵 播放點擊/飛行短音效
+        function playSe() {
+            if (!isMuted) {
+                clickSe.currentTime = 0; // 重置音效軌道時間
+                clickSe.play().catch(err => console.log("音效播放失敗"));
+            }
+        }
+
+        function initStage() {
+            const currentData = gameData[currentStage];
+            stageTitle.innerText = currentData.title;
+            stageDesc.innerHTML = currentData.desc;
+            
+            document.body.className = `stage-${currentStage + 1}`;
+            prevStageBtn.style.display = currentStage > 0 ? 'flex' : 'none';
+            congratsText.style.display = 'none'; 
+            
+            taskList.innerHTML = '';
+            nextGateBtn.style.display = 'none';
+
+            const shareBtn = document.getElementById('shareBtn');
+            if(shareBtn && currentStage !== 2) shareBtn.remove();
+
+            currentData.tasks.forEach((task) => {
+                const item = document.createElement('div');
+                item.className = 'task-item';
+                
+                const isCollected = collectedTaskIds.has(task.id);
+                if (isCollected) item.classList.add('completed');
+                
+                item.innerHTML = `<span>${task.menuText}</span> <span class="status-icon">${isCollected ? '✔️' : '➕'}</span>`;
+                item.onclick = (e) => handleTaskClick(item, task, e);
+                taskList.appendChild(item);
+            });
+
+            checkStageStatusSilent();
+        }
+
+        // 🎯 核心控制點：只有點選關卡裡面的選項 (task-item) 才會觸發播放音效
+        function handleTaskClick(btnElement, taskObj, event) {
+            playSe(); // 🔊 唯獨在此處保留播放音效機制！
+
+            if (collectedTaskIds.has(taskObj.id)) {
+                modalTitle.innerHTML = taskObj.modalTitle;
+                modalBody.innerHTML = taskObj.modalBody;
+                infoModal.classList.add('show');
+                return;
+            }
+
+            const rect = btnElement.getBoundingClientRect();
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + rect.height / 2;
+
+            const heroRect = hero.getBoundingClientRect();
+            const targetX = heroRect.left + heroRect.width / 2;
+            const targetY = heroRect.top + heroRect.height / 2;
+
+            const orb = document.createElement('div');
+            orb.className = 'flying-orb';
+            orb.style.left = `${startX}px`;
+            orb.style.top = `${startY}px`;
+            document.body.appendChild(orb);
+
+            requestAnimationFrame(() => {
+                orb.style.left = `${targetX}px`;
+                orb.style.top = `${targetY}px`;
+                orb.style.transform = 'scale(0.4)';
+            });
+
+            setTimeout(() => {
+                orb.remove();
+                hero.classList.add('glow');
+                
+                btnElement.classList.add('completed');
+                btnElement.querySelector('.status-icon').innerText = '✔️';
+                collectedTaskIds.add(taskObj.id);
+
+                checkAndTriggerRewards();
+
+                setTimeout(() => {
+                    modalTitle.innerHTML = taskObj.modalTitle;
+                    modalBody.innerHTML = taskObj.modalBody;
+                    infoModal.classList.add('show');
+                }, 200);
+
+            }, 800);
+        }
+
+        function closeModal() {
+            // 🔊 移除此處的 playSe()
+            infoModal.classList.remove('show');
+            hero.classList.remove('glow');
+        }
+
+        function checkAndTriggerRewards() {
+            const currentData = gameData[currentStage];
+            const allDone = currentData.tasks.every(t => collectedTaskIds.has(t.id));
+
+            if (allDone) {
+                if (!stageRewardsGranted[currentStage]) {
+                    if (currentData.rewardType === 'giftcard') {
+                        totalGiftcard += currentData.rewardValue;
+                        document.getElementById('giftcard').innerText = totalGiftcard;
+                    } else {
+                        totalMoney += currentData.rewardValue;
+                        document.getElementById('money').innerText = totalMoney;
+                    }
+                    stageRewardsGranted[currentStage] = true;
+                }
+
+                nextGateBtn.innerText = currentData.nextStageTrigger;
+                nextGateBtn.style.display = 'block';
+
+                if (currentStage === 2) {
+                    congratsText.innerText = "🏆 恭喜獲得第一名！你已成為最出色的實習引路人！";
+                    congratsText.style.display = 'block';
+
+                    if (!document.getElementById('shareBtn')) {
+                        const shareBtn = document.createElement('button');
+                        shareBtn.id = 'shareBtn';
+                        shareBtn.className = 'next-gate-btn';
+                        shareBtn.style.background = 'linear-gradient(45deg, #4CAF50, #8BC34A)';
+                        shareBtn.style.boxShadow = '0 4px 0 #388E3C';
+                        shareBtn.style.display = 'block';
+                        shareBtn.innerText = '🔗 分享給更多人';
+                        shareBtn.onclick = copyShareLink;
+                        gateArea.appendChild(shareBtn); 
+                    }
+                }
+            }
+        }
+
+        function checkStageStatusSilent() {
+            const currentData = gameData[currentStage];
+            const allDone = currentData.tasks.every(t => collectedTaskIds.has(t.id));
+            if (allDone) {
+                nextGateBtn.innerText = currentData.nextStageTrigger;
+                nextGateBtn.style.display = 'block';
+                
+                if (currentStage === 2) {
+                    congratsText.innerText = "🏆 恭喜獲得第一名！你已成為最出色的實習引路人！";
+                    congratsText.style.display = 'block';
+
+                    if (!document.getElementById('shareBtn')) {
+                        const shareBtn = document.createElement('button');
+                        shareBtn.id = 'shareBtn';
+                        shareBtn.className = 'next-gate-btn';
+                        shareBtn.style.background = 'linear-gradient(45deg, #4CAF50, #8BC34A)';
+                        shareBtn.style.boxShadow = '0 4px 0 #388E3C';
+                        shareBtn.style.display = 'block';
+                        shareBtn.innerText = '🔗 分享給更多人';
+                        shareBtn.onclick = copyShareLink;
+                        gateArea.appendChild(shareBtn); 
+                    }
+                }
+            }
+        }
+
+        function executeGateAction() {
+            // 🔊 移除此處的 playSe()
+            if (currentStage < gameData.length - 1) {
+                currentStage++;
+                initStage();
+            } else {
+                window.open('https://ccd.nthu.edu.tw/news/529', '_blank');
+            }
+        }
+
+        function goToPrevStage() {
+            // 🔊 移除此處的 playSe()
+            if (currentStage > 0) {
+                const shareBtn = document.getElementById('shareBtn');
+                if(shareBtn) shareBtn.remove();
+
+                if (currentStage === 2) {
+                    if (stageRewardsGranted[2]) {
+                        totalMoney -= 7000;
+                        stageRewardsGranted[2] = false;
+                    }
+                } else if (currentStage === 1) {
+                    if (stageRewardsGranted[1]) {
+                        totalMoney -= 2000;
+                        stageRewardsGranted[1] = false;
+                    }
+                }
+
+                if (totalMoney < 0) totalMoney = 0;
+                document.getElementById('money').innerText = totalMoney;
+                document.getElementById('giftcard').innerText = totalGiftcard;
+
+                currentStage--;
+                initStage();
+            }
+        }
+
+        function goHome() {
+            // 🔊 移除此處的 playSe()
+            if (confirm("確定要重頭開始冒險（回到首頁）嗎？進度將會重置喔！")) {
+                currentStage = 0;
+                totalMoney = 0;
+                totalGiftcard = 0;
+                collectedTaskIds.clear();
+                stageRewardsGranted = [false, false, false];
+                document.getElementById('money').innerText = 0;
+                document.getElementById('giftcard').innerText = 0;
+                const shareBtn = document.getElementById('shareBtn');
+                if(shareBtn) shareBtn.remove();
+                initStage();
+            }
+        }
+
+        function copyShareLink() {
+            // 🔊 移除此處的 playSe()
+            const currentUrl = window.location.href;
+            navigator.clipboard.writeText(currentUrl).then(() => {
+                alert("🔗 網址已成功複製到剪貼簿！快分享給同學吧！");
+            }).catch(err => {
+                alert("複製失敗，請手動複製網址喔！");
+            });
+        }
+
+        function openChest() {
+            // 🔊 移除此處的 playSe()
+            if (collectedTaskIds.size === 0) {
+                modalTitle.innerHTML = "🧳 空空的背包";
+                modalBody.innerHTML = "你的背包目前還是空的呢！快點擊右邊的關卡任務，收集實習攻略道具吧！";
+                infoModal.classList.add('show');
+                return;
+            }
+
+            modalTitle.innerHTML = "🧳 引路背包 (已解鎖的實習攻略)";
+            let htmlContent = "<div style='display:flex; flex-direction:column; gap:15px;'>";
+            
+            gameData.forEach(stage => {
+                stage.tasks.forEach(task => {
+                    if (collectedTaskIds.has(task.id)) {
+                        htmlContent += `
+                            <div style='border-bottom:1px dashed #FFE082; padding-bottom:10px;'>
+                                <h4 style='color:#FF8A00; margin-bottom:5px;'>${task.menuText}</h4>
+                                <p style='font-size:0.95rem; color:#5C4033;'>${task.modalBody}</p>
+                            </div>
+                        `;
+                    }
+                });
+            });
+            
+            htmlContent += "</div>";
+            modalBody.innerHTML = htmlContent;
+            infoModal.classList.add('show');
+        }
+
+        initStage();
+    </script>
+</body>
+</html>
