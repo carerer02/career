@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>微光嚮導</title>
+    <title>微光嚮導：實習故事收集</title>
     <style>
         /* =========================================
            1. 全域變數與背景色調 (優化4：一三階段色調對調)
@@ -205,7 +205,7 @@
             width: 55%;
             display: flex;
             flex-direction: column;
-            align-items: flex-end; /* 讓整體（包含框下方的按鈕）靠右對齊 */
+            align-items: flex-end; /* 讓電腦版整體（包含框下方的按鈕）靠右對齊 */
         }
         .task-board {
             background: var(--panel-bg);
@@ -264,13 +264,14 @@
             border-radius: 12px;
             border: 2px dashed #FFB703;
             display: none;
+            width: 100%;
         }
 
         /* 🚪 右邊框下方的縮小並排按鈕區 */
         .flow-control-area {
             margin-top: 15px;
             display: flex;
-            justify-content: flex-end; /* 靠右對齊 */
+            justify-content: flex-end; /* 電腦版靠右對齊 */
             gap: 12px;
             width: 100%;
         }
@@ -406,9 +407,12 @@
                 width: 100%;
                 justify-content: center;
                 margin-bottom: 5px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
 
-            /* 錢包與寶箱：放開絕對定位，在手機版老實排在角色正上方 */
+            /* 錢包與寶箱：放開絕對定位，在手機版排在角色正上方 */
             .wallet-group {
                 position: relative;
                 top: 0;
@@ -427,6 +431,22 @@
             /* 縮小角色圖片，避免肥大佔據大半個手機螢幕 */
             .character {
                 max-width: 160px;
+                order: 2; /* 讓人物排在錢包下方 */
+            }
+
+            /* 📱 關鍵修改1：調整手機版解鎖按鈕與稱號的出現順序（插在人物下方、白框上方） */
+            .left-panel .flow-control-area,
+            .left-panel .congrats-text {
+                order: 3; /* 人物(2) -> 按鈕與稱號(3) */
+                margin-top: 15px;
+                margin-bottom: 5px;
+                width: 100%;
+                max-width: 320px; /* ⚙️ 關鍵修改：與選項寬度一模一樣！ */
+            }
+
+            /* 隱藏右側原本框底部的按鈕區，全部交給左側人物下方渲染 */
+            .right-panel .flow-control-area {
+                display: none !important;
             }
 
             /* 右側面板任務白框自適應撐滿 */
@@ -437,6 +457,7 @@
             .task-board {
                 padding: 25px 20px;
                 border-radius: 20px;
+                max-width: 340px; /* 撐開寬度，讓內部的選項完滿達到 320px 左右 */
             }
             .stage-title {
                 font-size: 1.4rem;
@@ -447,26 +468,31 @@
             .task-item {
                 padding: 14px 15px;
                 font-size: 0.95rem;
+                width: 100%;
+                max-width: 320px;
             }
 
-            /* 下方並排按鈕區：在手機版也完美微調並排 */
+            /* 手機版並排按鈕區：完美等寬並排撐滿 320px */
             .flow-control-area {
                 justify-content: center;
                 width: 100%;
                 gap: 8px;
             }
             .next-gate-btn {
-                padding: 10px 16px;
-                font-size: 0.85rem;
-                flex: 1; /* 讓兩個小按鈕在手機版可以完美等寬並排 */
+                padding: 10px 14px;
+                font-size: 0.82rem;
+                flex: 1; /* 兩個小按鈕等寬並排 */
+                width: 100%;
                 max-width: 160px;
                 text-align: center;
             }
             
-            /* 稱號大文字縮小 */
+            /* 稱號大文字縮小並撐滿 320px */
             .congrats-text {
-                font-size: 1.05rem;
+                font-size: 1rem;
                 width: 100%;
+                max-width: 320px;
+                margin: 10px 0;
             }
 
             /* 隱藏純 CSS 繪製的大山景，避免在手機版造成視覺雜亂 */
@@ -494,7 +520,7 @@
 
     <div class="main-container">
         
-        <div class="left-panel">
+        <div class="left-panel" id="mobileLeftPanel">
             <div class="wallet-group">
                 <div class="wallet">
                     <div>🎒 累積競賽獎金：<span id="money">0</span> 元</div>
@@ -505,8 +531,8 @@
             <img src="character.png" alt="角色" class="character" id="hero" onerror="this.onerror=null; this.src='https://via.placeholder.com/280x400/FFB3A7/FFF?text=透明背景人物圖';">
         </div>
 
-        <div class="right-panel">
-            <div class="task-board">
+        <div class="right-panel" id="mobileRightPanel">
+            <div class="task-board" id="mobileTaskBoard">
                 <div class="stage-title" id="stageTitle">載入中...</div>
                 <div class="stage-desc" id="stageDesc">載入中...</div>
                 
@@ -559,7 +585,7 @@
                         id: "s1_t3",
                         menuText: "📅 實習證明文件 (同一機構需滿 60 小時)", 
                         modalTitle: "✨ 要點提醒", 
-                        modalBody: "<b>格式：</b><br>提供pdf or jpg檔，1MB內，實習機構 or 系所開立之證明文件（可明確辨識有實習事實），不限形式。<br><br><b>說明：</b><br>同一校外實習機構參與產業實習（不含教學實習、教育實習）累計時數達60（含）小時以上者。" 
+                        modalBody: "<b>格式：</b><br>提供pdf or jpg檔，1MB內，實習機構 or 系所開立之證明文件（可明確辨識有實習事實），不限形式。<br><br><b>說明：</b><br>同一校外實習機構參與產業實習（不含教學實習、教育實習）累計時數達60（含）小時以上者者。" 
                     },
                     { 
                         id: "s1_t4",
@@ -580,7 +606,7 @@
                         id: "s2_t1",
                         menuText: "🏆 角逐優選作品", 
                         modalTitle: "🌟 複選榮耀", 
-                        modalBody: "初選前50%作品進入複選階段，複選將精選出優秀作品。<br><b>優選</b>可獲得獎金新臺幣2,000元！<br><b>佳作</b>可獲獎金新臺幣1,000元！<br><br>獲優選者，將解鎖出席總決賽現場簡報的終極任務。" 
+                        modalBody: "初選前50%作品進入複選階段，複選將精選出優秀作品。<br><b>優選</b>可獲得獎金新臺幣2,000元元！<br><b>佳作</b>可獲獎金新臺幣1,000元！<br><br>獲優選者，將解鎖出席總決賽現場簡報的終極任務。" 
                     },
                     { 
                         id: "s2_t2",
@@ -621,7 +647,7 @@
         let totalGiftcard = 0;
         let collectedTaskIds = new Set();
         let stageRewardsGranted = [false, false, false];
-        let isMuted = true; // 音效控制開關：預設關閉
+        let isMuted = true; 
 
         const hero = document.getElementById('hero');
         const taskList = document.getElementById('taskList');
@@ -660,7 +686,27 @@
             }
         }
 
+        // 📱 核心控制：環境切換時，自動將按鈕與稱號元件塞入對應的 HTML 容器中
+        function adaptElementsForDevice() {
+            const isMobile = window.innerWidth <= 768;
+            const mobileLeftPanel = document.getElementById('mobileLeftPanel');
+            const mobileRightPanel = document.getElementById('mobileRightPanel');
+            const mobileTaskBoard = document.getElementById('mobileTaskBoard');
+
+            if (isMobile) {
+                // 手機版：將稱號與按鈕搬到左側人物下方
+                if (congratsText.parentNode !== mobileLeftPanel) mobileLeftPanel.appendChild(congratsText);
+                if (gateArea.parentNode !== mobileLeftPanel) mobileLeftPanel.appendChild(gateArea);
+            } else {
+                // 電腦版：物歸原位
+                if (congratsText.parentNode !== mobileTaskBoard) mobileTaskBoard.appendChild(congratsText);
+                if (gateArea.parentNode !== mobileRightPanel) mobileRightPanel.appendChild(gateArea);
+            }
+        }
+
         function initStage() {
+            adaptElementsForDevice(); // 初始化時配對裝置外觀
+
             const currentData = gameData[currentStage];
             stageTitle.innerText = currentData.title;
             stageDesc.innerHTML = currentData.desc;
@@ -808,9 +854,26 @@
             }
         }
 
+        // 🚪 核心修改2：全部點選完的狀態下，點選 nextStageTrigger 到下一關時，把金額精確加回去
         function executeGateAction() {
             if (currentStage < gameData.length - 1) {
                 currentStage++;
+                
+                // ⚙️ 加回機制：如果下一關原本就已經全數完成了，且先前被返回退款過，前進時就把金額再加回來
+                const nextData = gameData[currentStage];
+                const nextAllDone = nextData.tasks.every(t => collectedTaskIds.has(t.id));
+                if (nextAllDone && !stageRewardsGranted[currentStage]) {
+                    if (nextData.rewardType === 'giftcard') {
+                        totalGiftcard += nextData.rewardValue;
+                    } else {
+                        totalMoney += nextData.rewardValue;
+                    }
+                    stageRewardsGranted[currentStage] = true;
+                    
+                    document.getElementById('money').innerText = totalMoney;
+                    document.getElementById('giftcard').innerText = totalGiftcard;
+                }
+
                 initStage();
             } else {
                 window.open('https://ccd.nthu.edu.tw/news/529', '_blank');
@@ -895,6 +958,9 @@
             modalBody.innerHTML = htmlContent;
             infoModal.classList.add('show');
         }
+
+        // 監聽手機/電腦視窗大小縮放，即時修正按鈕位置
+        window.addEventListener('resize', adaptElementsForDevice);
 
         initStage();
     </script>
