@@ -495,9 +495,9 @@
                 border-radius: 15px;
             }
 
-            /* 🛠️ 核心修正：當第三階段兩個按鈕（橘、綠）同時出現時，自動變為「並排且完美置中」的尺寸 */
+            /* 當第三階段兩個按鈕（橘、綠）同時出現時，自動變為「並排且完美置中」的尺寸 */
             .flow-control-area:has(#shareBtn) {
-                justify-content: center !important; /* 🌟 核心修正：由 flex-end 改為置中對齊 */
+                justify-content: center !important; /* 置中對齊 */
             }
             .flow-control-area:has(#shareBtn) .next-gate-btn {
                 width: auto !important; /* 恢復原始精緻小巧按鈕寬度 */
@@ -770,7 +770,8 @@
 
             const heroRect = hero.getBoundingClientRect();
             const targetX = heroRect.left + heroRect.width / 2;
-            const targetY = heroRect.top + heroRect.height / 2;
+            // 🌟 核心修正：將光點吸入的終點位置，精確鎖定在魔法師胸前徽章的高度 (從整張圖片上方算起 38% 的高度)
+            const targetY = heroRect.top + (heroRect.height * 0.38);
 
             const orb = document.createElement('div');
             orb.className = 'flying-orb';
