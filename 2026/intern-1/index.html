@@ -367,6 +367,113 @@
             z-index: 100;
             transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
+
+        /* =========================================
+           📱 手機與平板專屬防跑版微調 (RWD 響應式)
+        ========================================= */
+        @media screen and (max-width: 768px) {
+            body {
+                height: auto;
+                min-height: 100vh;
+                overflow-y: auto; /* 允許手機上下捲動 */
+                padding: 90px 15px 40px 15px; /* 留空間給頂部按鈕 */
+            }
+
+            /* 頂部導航按鈕縮小，防止擠壓變形 */
+            .top-nav {
+                top: 15px;
+                right: 5%;
+                width: 90%;
+                justify-content: flex-end;
+                gap: 8px;
+            }
+            .nav-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+                border-radius: 15px;
+            }
+
+            /* 核心大容器：由左右並排自動變更為上下疊放 */
+            .main-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 25px;
+                width: 100%;
+            }
+
+            /* 左側面板寬度自適應撐滿 */
+            .left-panel {
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 5px;
+            }
+
+            /* 錢包與寶箱：放開絕對定位，在手機版老實排在角色正上方 */
+            .wallet-group {
+                position: relative;
+                top: 0;
+                left: 0;
+                width: 100%;
+                max-width: 320px;
+                align-items: center;
+                margin-bottom: 15px;
+                gap: 10px;
+            }
+            .wallet, .chest-btn {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            /* 縮小角色圖片，避免肥大佔據大半個手機螢幕 */
+            .character {
+                max-width: 160px;
+            }
+
+            /* 右側面板任務白框自適應撐滿 */
+            .right-panel {
+                width: 100%;
+                align-items: center;
+            }
+            .task-board {
+                padding: 25px 20px;
+                border-radius: 20px;
+            }
+            .stage-title {
+                font-size: 1.4rem;
+            }
+            .stage-desc {
+                font-size: 0.95rem;
+            }
+            .task-item {
+                padding: 14px 15px;
+                font-size: 0.95rem;
+            }
+
+            /* 下方並排按鈕區：在手機版也完美微調並排 */
+            .flow-control-area {
+                justify-content: center;
+                width: 100%;
+                gap: 8px;
+            }
+            .next-gate-btn {
+                padding: 10px 16px;
+                font-size: 0.85rem;
+                flex: 1; /* 讓兩個小按鈕在手機版可以完美等寬並排 */
+                max-width: 160px;
+                text-align: center;
+            }
+            
+            /* 稱號大文字縮小 */
+            .congrats-text {
+                font-size: 1.05rem;
+                width: 100%;
+            }
+
+            /* 隱藏純 CSS 繪製的大山景，避免在手機版造成視覺雜亂 */
+            .scenery {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -533,25 +640,22 @@
         const modalTitle = document.getElementById('modalTitle');
         const modalBody = document.getElementById('modalBody');
 
-        // 🔊 喇叭開關控制函式
         function toggleSound() {
             isMuted = !isMuted;
             if (isMuted) {
                 soundBtn.innerText = "🔇 音效：關";
                 soundBtn.classList.remove('sound-active');
-                bgm.pause(); // 暫停背景音樂
+                bgm.pause(); 
             } else {
                 soundBtn.innerText = "🔊 音效：開";
                 soundBtn.classList.add('sound-active');
-                bgm.play().catch(err => console.log("音樂播放受瀏覽器權限限制")); // 啟動背景音樂
-                // 🔊 移除切換開關時的 playSe() 觸發，確保此按鈕不發聲
+                bgm.play().catch(err => console.log("音樂播放受瀏覽器權限限制")); 
             }
         }
 
-        // 🎵 播放點擊/飛行短音效
         function playSe() {
             if (!isMuted) {
-                clickSe.currentTime = 0; // 重置音效軌道時間
+                clickSe.currentTime = 0; 
                 clickSe.play().catch(err => console.log("音效播放失敗"));
             }
         }
@@ -586,9 +690,8 @@
             checkStageStatusSilent();
         }
 
-        // 🎯 核心控制點：只有點選關卡裡面的選項 (task-item) 才會觸發播放音效
         function handleTaskClick(btnElement, taskObj, event) {
-            playSe(); // 🔊 唯獨在此處保留播放音效機制！
+            playSe(); 
 
             if (collectedTaskIds.has(taskObj.id)) {
                 modalTitle.innerHTML = taskObj.modalTitle;
@@ -637,7 +740,6 @@
         }
 
         function closeModal() {
-            // 🔊 移除此處的 playSe()
             infoModal.classList.remove('show');
             hero.classList.remove('glow');
         }
@@ -707,7 +809,6 @@
         }
 
         function executeGateAction() {
-            // 🔊 移除此處的 playSe()
             if (currentStage < gameData.length - 1) {
                 currentStage++;
                 initStage();
@@ -717,7 +818,6 @@
         }
 
         function goToPrevStage() {
-            // 🔊 移除此處的 playSe()
             if (currentStage > 0) {
                 const shareBtn = document.getElementById('shareBtn');
                 if(shareBtn) shareBtn.remove();
@@ -744,7 +844,6 @@
         }
 
         function goHome() {
-            // 🔊 移除此處的 playSe()
             if (confirm("確定要重頭開始冒險（回到首頁）嗎？進度將會重置喔！")) {
                 currentStage = 0;
                 totalMoney = 0;
@@ -760,7 +859,6 @@
         }
 
         function copyShareLink() {
-            // 🔊 移除此處的 playSe()
             const currentUrl = window.location.href;
             navigator.clipboard.writeText(currentUrl).then(() => {
                 alert("🔗 網址已成功複製到剪貼簿！快分享給同學吧！");
@@ -770,7 +868,6 @@
         }
 
         function openChest() {
-            // 🔊 移除此處的 playSe()
             if (collectedTaskIds.size === 0) {
                 modalTitle.innerHTML = "🧳 空空的背包";
                 modalBody.innerHTML = "你的背包目前還是空的呢！快點擊右邊的關卡任務，收集實習攻略道具吧！";
