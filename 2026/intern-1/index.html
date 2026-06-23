@@ -205,7 +205,7 @@
             width: 55%;
             display: flex;
             flex-direction: column;
-            align-items: flex-end; /* 讓電腦版整體（包含框下方的按鈕）靠右對齊 */
+            align-items: flex-end; /* 讓電腦版整體靠右對齊 */
         }
         .task-board {
             background: var(--panel-bg);
@@ -434,14 +434,14 @@
                 order: 2; /* 讓人物排在錢包下方 */
             }
 
-            /* 📱 關鍵修改1：調整手機版解鎖按鈕與稱號的出現順序（插在人物下方、白框上方） */
+            /* 調整手機版解鎖按鈕與稱號的出現順序（插在人物下方、白框上方） */
             .left-panel .flow-control-area,
             .left-panel .congrats-text {
                 order: 3; /* 人物(2) -> 按鈕與稱號(3) */
                 margin-top: 15px;
                 margin-bottom: 5px;
                 width: 100%;
-                max-width: 320px; /* ⚙️ 關鍵修改：與選項寬度一模一樣！ */
+                max-width: 320px; /* 與選項寬度一模一樣 */
             }
 
             /* 隱藏右側原本框底部的按鈕區，全部交給左側人物下方渲染 */
@@ -472,19 +472,40 @@
                 max-width: 320px;
             }
 
-            /* 手機版並排按鈕區：完美等寬並排撐滿 320px */
+            /* 手機版按鈕排列與大小控制 */
             .flow-control-area {
+                display: flex;
+                flex-direction: row; /* 恢復並排 */
                 justify-content: center;
+                align-items: center;
                 width: 100%;
+                max-width: 320px;
                 gap: 8px;
             }
+            
+            /* ⚙️ 核心微調：前兩關的按鈕維持巨大好按，但第三關有兩個按鈕時自動套用您最滿意的原始精緻並排大小 */
             .next-gate-btn {
-                padding: 10px 14px;
-                font-size: 0.82rem;
-                flex: 1; /* 兩個小按鈕等寬並排 */
-                width: 100%;
-                max-width: 160px;
+                display: inline-block;
+                width: 100%; /* 階段一、二預設撐滿 */
+                max-width: 320px;
+                padding: 14px 15px;
+                font-size: 1rem;
+                line-height: 1.5;
                 text-align: center;
+                border-radius: 15px;
+            }
+
+            /* 當第三階段兩個按鈕（橘、綠）同時出現時，自動變回原本精緻小巧、縮小並排的尺寸 */
+            .flow-control-area:has(#shareBtn) {
+                justify-content: flex-end; /* 回復靠右 */
+            }
+            .flow-control-area:has(#shareBtn) .next-gate-btn {
+                width: auto !important; /* 🌟 移除 320px 限制，回復原本按鈕大小 */
+                max-width: 180px !important;
+                padding: 10px 16px !important; /* 回復原始邊距 */
+                font-size: 0.85rem !important; /* 回復原始字體 */
+                border-radius: 20px !important;
+                flex: none !important;
             }
             
             /* 稱號大文字縮小並撐滿 320px */
@@ -566,32 +587,32 @@
                 title: "階段一：投稿準備",
                 desc: "將你的實習點滴化為火種。前50名通過資格審查者可獲得早鳥禮！",
                 rewardType: "giftcard",
-                rewardValue: 100, 
+                rewardValue: 100,
                 nextStageTrigger: "✨ 恭喜通過資格審查！點擊進入初選＆複選階段。",
                 tasks: [
                     { 
                         id: "s1_t1",
                         menuText: "📸 實習相片與說明", 
                         modalTitle: "✨ 要點提醒", 
-                        modalBody: "<b>照片格式：</b><br>原始檔jpg檔1張，建議1MB以上3MB以內，解析度300dpi以上，須於實習場域拍攝，有作者本人在內且能呈現實習情形為佳。<br><br><b>照片文字：</b><br>中文限20字；英文限40字元數，含空格及標點符號。" 
+                        modalBody: "<b>照片格式：</b><br>原始檔jpg檔1張，建議1MB以上3MB以內，解析度300dpi以上，須於實習場域拍攝，有作者本人在內且能呈現實習情形為佳。<br><br><b>照片文字：</b><br>中文限20字；英文限40字元數，含空格及標點符號。"
                     },
                     { 
                         id: "s1_t2",
                         menuText: "📝 實習心得故事 (中/英文限擇一投稿)", 
                         modalTitle: "✨ 要點提醒", 
-                        modalBody: "<b>相片與文字搭配得宜（20%）<br>印象最深刻的故事(30%)<br>實習心得（25%）<br>對未來職涯發展的影響（25%）</b><br><br>盡情分享你在實習期間印象最深刻的故事、遇到的挑戰、如何克服，以及學校所學理論與實務的契合度！<br>*中文限400至500字以內，含標點符號。<br>*英文限500至1000字元數以內，含空格及標點符號。" 
+                        modalBody: "<b>相片與文字搭配得宜（20%）<br>印象最深刻的故事(30%)<br>實習心得（25%）<br>對未來職涯發展的影響（25%）</b><br><br>盡情分享你在實習期間印象最深刻的故事、遇到的挑戰、如何克服，以及學校所學理論與實務的契合度！<br>*中文限400至500字以內，含標點符號。<br>*英文限500至1000字元數以內，含空格及標點符號。"
                     },
                     { 
                         id: "s1_t3",
                         menuText: "📅 實習證明文件 (同一機構需滿 60 小時)", 
                         modalTitle: "✨ 要點提醒", 
-                        modalBody: "<b>格式：</b><br>提供pdf or jpg檔，1MB內，實習機構 or 系所開立之證明文件（可明確辨識有實習事實），不限形式。<br><br><b>說明：</b><br>同一校外實習機構參與產業實習（不含教學實習、教育實習）累計時數達60（含）小時以上者者。" 
+                        modalBody: "<b>格式：</b><br>提供pdf or jpg檔，1MB內，實習機構 or 系所開立之證明文件（可明確辨識有實習事實），不限形式。<br><br><b>說明：</b><br>同一校外實習機構參與產業實習（不含教學實習、教育實習）累計時數達60（含）小時以上者。"
                     },
                     { 
                         id: "s1_t4",
                         menuText: "📄 學生證與授權切結書", 
                         modalTitle: "✨ 要點提醒", 
-                        modalBody: "請備妥橫式正面學生證、實習證明、以及簽名拍下的著作權授權同意書（PDF/JPG 皆可）。<br><br>必須使用清華 <b>Gapp 帳號</b>登入 Google 表單報名上傳！" 
+                        modalBody: "請備妥橫式正面學生證、實習證明、以及簽名拍下的著作權授權同意書（PDF/JPG 皆可）。<br><br>必須使用清華 <b>Gapp 帳號</b>登入 Google 表單報名上傳！"
                     }
                 ]
             },
@@ -599,20 +620,20 @@
                 title: "階段二：初選＆複選審查階段",
                 desc: "初選階段將選出前50% 作品進入複選階段！<br>複選獲得評審青睞！優選者參加總決賽，佳作將受邀出席總決賽。",
                 rewardType: "money",
-                rewardValue: 2000, 
+                rewardValue: 2000,
                 nextStageTrigger: "🌟 成功奪得總決賽門票！點擊站上總決賽舞台。",
                 tasks: [
                     { 
                         id: "s2_t1",
                         menuText: "🏆 角逐優選作品", 
                         modalTitle: "🌟 複選榮耀", 
-                        modalBody: "初選前50%作品進入複選階段，複選將精選出優秀作品。<br><b>優選</b>可獲得獎金新臺幣2,000元元！<br><b>佳作</b>可獲獎金新臺幣1,000元！<br><br>獲優選者，將解鎖出席總決賽現場簡報的終極任務。" 
+                        modalBody: "初選前50%作品進入複選階段，複選將精選出優秀作品。<br><b>優選</b>可獲得獎金新臺幣2,000元！<br><b>佳作</b>可獲獎金新臺幣1,000元！<br><br>獲優選者，將解鎖出席總決賽現場簡報的終極任務。"
                     },
                     { 
                         id: "s2_t2",
                         menuText: "📊 準備 3~7 頁簡報精華", 
                         modalTitle: "🌟 簡報軍備", 
-                        modalBody: "獲優選者需出席總決賽。請將你的實習故事濃縮精煉，製作成<b>至少 3 頁、至多 7 頁</b>的簡報，準備在決賽現場進行 5 分鐘現場分享！<br><br><b>簡報結構完整與故事性(40%)<br>表達流暢(30%)<br>台風表現(30%)</b>" 
+                        modalBody: "獲優選者需出席總決賽。請將你的實習故事濃縮精煉，製作成<b>至少 3 頁、至多 7 頁</b>的簡報，準備在決賽現場進行 5 分鐘現場分享！<br><br><b>簡報結構完整與故事性(40%)<br>表達流暢(30%)<br>台風表現(30%)</b>"
                     }
                 ]
             },
@@ -620,20 +641,20 @@
                 title: "階段三：總決賽巔峰對決",
                 desc: "115年11月20日總決賽暨頒頒獎典禮現場！在評審與觀眾面前展現最強的一面！",
                 rewardType: "money",
-                rewardValue: 7000, 
+                rewardValue: 7000,
                 nextStageTrigger: "🚀 查看完整公告",
                 tasks: [
                     { 
                         id: "s3_t1",
                         menuText: "🏗️ 簡報結構完整與故事性(40%)", 
                         modalTitle: "🎉 決賽核心", 
-                        modalBody: "決賽評審評分佔比最高的是<b>簡報結構完整性(40%)</b>！確保你的實習歷程具備起承轉合與強烈的故事吸引力。" 
+                        modalBody: "決賽評審評分佔比最高的是<b>簡報結構完整性(40%)</b>！確保你的實習歷程具備起承轉合與強烈的故事吸引力。"
                     },
                     { 
                         id: "s3_t2",
                         menuText: "🎙️ 表達流暢(30%) + 台風表現(30%)", 
                         modalTitle: "🎉 舞台魅力", 
-                        modalBody: "演練你的<b>表達流暢度(30%)</b>與現場<b>台風表現(30%)</b>。<br>現場還有觀眾預先報名參與的<b>最佳人氣票選活動</b>，全力爭取人氣獎吧！" 
+                        modalBody: "演練你的<b>表達流暢度(30%)</b>與現場<b>台風表現(30%)</b>。<br>現場還有觀眾預先報名參與的<b>最佳人氣票選活動</b>，全力爭取人氣獎吧！"
                     }
                 ]
             }
@@ -686,7 +707,6 @@
             }
         }
 
-        // 📱 核心控制：環境切換時，自動將按鈕與稱號元件塞入對應的 HTML 容器中
         function adaptElementsForDevice() {
             const isMobile = window.innerWidth <= 768;
             const mobileLeftPanel = document.getElementById('mobileLeftPanel');
@@ -694,18 +714,16 @@
             const mobileTaskBoard = document.getElementById('mobileTaskBoard');
 
             if (isMobile) {
-                // 手機版：將稱號與按鈕搬到左側人物下方
                 if (congratsText.parentNode !== mobileLeftPanel) mobileLeftPanel.appendChild(congratsText);
                 if (gateArea.parentNode !== mobileLeftPanel) mobileLeftPanel.appendChild(gateArea);
             } else {
-                // 電腦版：物歸原位
                 if (congratsText.parentNode !== mobileTaskBoard) mobileTaskBoard.appendChild(congratsText);
                 if (gateArea.parentNode !== mobileRightPanel) mobileRightPanel.appendChild(gateArea);
             }
         }
 
         function initStage() {
-            adaptElementsForDevice(); // 初始化時配對裝置外觀
+            adaptElementsForDevice(); 
 
             const currentData = gameData[currentStage];
             stageTitle.innerText = currentData.title;
@@ -836,7 +854,7 @@
                 nextGateBtn.style.display = 'block';
                 
                 if (currentStage === 2) {
-                    congratsText.innerText = "🏆 恭喜獲得第一名！你已成為最出色的實習引路人！";
+                    congratsText.innerText = "🏆 恭喜獲得第一名！你已成為最出色的實習引引路人！";
                     congratsText.style.display = 'block';
 
                     if (!document.getElementById('shareBtn')) {
@@ -854,12 +872,10 @@
             }
         }
 
-        // 🚪 核心修改2：全部點選完的狀態下，點選 nextStageTrigger 到下一關時，把金額精確加回去
         function executeGateAction() {
             if (currentStage < gameData.length - 1) {
                 currentStage++;
                 
-                // ⚙️ 加回機制：如果下一關原本就已經全數完成了，且先前被返回退款過，前進時就把金額再加回來
                 const nextData = gameData[currentStage];
                 const nextAllDone = nextData.tasks.every(t => collectedTaskIds.has(t.id));
                 if (nextAllDone && !stageRewardsGranted[currentStage]) {
@@ -959,7 +975,6 @@
             infoModal.classList.add('show');
         }
 
-        // 監聽手機/電腦視窗大小縮放，即時修正按鈕位置
         window.addEventListener('resize', adaptElementsForDevice);
 
         initStage();
