@@ -483,7 +483,7 @@
                 gap: 8px;
             }
             
-            /* ⚙️ 核心微調：前兩關的按鈕維持巨大好按，但第三關有兩個按鈕時自動套用您最滿意的原始精緻並排大小 */
+            /* 核心微調：前兩關的按鈕維持巨大好按 */
             .next-gate-btn {
                 display: inline-block;
                 width: 100%; /* 階段一、二預設撐滿 */
@@ -495,15 +495,15 @@
                 border-radius: 15px;
             }
 
-            /* 當第三階段兩個按鈕（橘、綠）同時出現時，自動變回原本精緻小巧、縮小並排的尺寸 */
+            /* 🛠️ 核心修正：當第三階段兩個按鈕（橘、綠）同時出現時，自動變為「並排且完美置中」的尺寸 */
             .flow-control-area:has(#shareBtn) {
-                justify-content: flex-end; /* 回復靠右 */
+                justify-content: center !important; /* 🌟 核心修正：由 flex-end 改為置中對齊 */
             }
             .flow-control-area:has(#shareBtn) .next-gate-btn {
-                width: auto !important; /* 🌟 移除 320px 限制，回復原本按鈕大小 */
+                width: auto !important; /* 恢復原始精緻小巧按鈕寬度 */
                 max-width: 180px !important;
-                padding: 10px 16px !important; /* 回復原始邊距 */
-                font-size: 0.85rem !important; /* 回復原始字體 */
+                padding: 10px 16px !important; /* 原始邊距 */
+                font-size: 0.85rem !important; /* 原始字體 */
                 border-radius: 20px !important;
                 flex: none !important;
             }
@@ -854,7 +854,7 @@
                 nextGateBtn.style.display = 'block';
                 
                 if (currentStage === 2) {
-                    congratsText.innerText = "🏆 恭喜獲得第一名！你已成為最出色的實習引引路人！";
+                    congratsText.innerText = "🏆 恭喜獲得第一名！你已成為最出色的實習引路人！";
                     congratsText.style.display = 'block';
 
                     if (!document.getElementById('shareBtn')) {
@@ -949,7 +949,7 @@
         function openChest() {
             if (collectedTaskIds.size === 0) {
                 modalTitle.innerHTML = "🧳 空空的背包";
-                modalBody.innerHTML = "你的背包目前還是空的呢！快點擊關卡任務，收集攻略道具吧！";
+                modalBody.innerHTML = "你的背包目前還是空的呢！快點擊右邊的關卡任務，收集實習攻略道具吧！";
                 infoModal.classList.add('show');
                 return;
             }
