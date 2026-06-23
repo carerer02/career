@@ -130,7 +130,7 @@
             width: 40%;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: center; /* 🛠️ 修正：網頁版左側面板整體內部水平居中 */
             justify-content: flex-end;
             position: relative;
         }
@@ -138,9 +138,10 @@
         .wallet-group {
             position: absolute;
             top: -160px;
-            left: 0;
+            /* 🛠️ 修正：移除 left: 0，改為水平置中對齊，讓錢包與背包對齊人物中線 */
             display: flex;
             flex-direction: column;
+            align-items: center; 
             gap: 15px;
         }
         .wallet {
@@ -544,12 +545,12 @@
         <div class="left-panel" id="mobileLeftPanel">
             <div class="wallet-group">
                 <div class="wallet">
-                    <div>💰 累積競賽獎金：<span id="money">0</span> 元</div>
-                    <div>🎁 7-11商品卡：<span id="giftcard">0</span> 元</div>
+                    <div>🪙 累積競賽獎金：<span id="money">0</span> 元</div>
+                    <div>🃏 7-11商品卡：<span id="giftcard">0</span> 元</div>
                 </div>
                 <button class="chest-btn" onclick="openChest()">🎒 點開引路背包 (檢視道具)</button>
             </div>
-            <img src="character-2.png" alt="角色" class="character" id="hero" onerror="this.onerror=null; this.src='https://via.placeholder.com/280x400/FFB3A7/FFF?text=透明背景人物圖';">
+            <img src="character.png" alt="角色" class="character" id="hero" onerror="this.onerror=null; this.src='https://via.placeholder.com/280x400/FFB3A7/FFF?text=透明背景人物圖';">
         </div>
 
         <div class="right-panel" id="mobileRightPanel">
@@ -770,8 +771,7 @@
 
             const heroRect = hero.getBoundingClientRect();
             const targetX = heroRect.left + heroRect.width / 2;
-            // 🌟 核心修正：將光點吸入的終點位置，精確鎖定在魔法師胸前徽章的高度 (從整張圖片上方算起 38% 的高度)
-            const targetY = heroRect.top + (heroRect.height * 0.38);
+            const targetY = heroRect.top + heroRect.height / 2;
 
             const orb = document.createElement('div');
             orb.className = 'flying-orb';
