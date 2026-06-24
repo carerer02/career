@@ -9,33 +9,43 @@
            1. 全域變數與背景色調 (優化4：一三階段色調對調)
         ========================================= */
         :root {
-            --bg-top: #0F2027;    /* 初始為深邃星空夜色 */
-            --bg-bottom: #203A43; 
-            --mountain-back: #1F3038;
-            --mountain-front: #0D161A;
+            --bg-top: #171B46;
+            --bg-mid: #23265D;
+            --bg-bottom: #312E73;
+            --glow-color: rgba(132, 123, 225, 0.26);
+            --mountain-back: #2A2C68;
+            --mountain-front: #111831;
             --panel-bg: rgba(255, 255, 255, 0.85);
             --text-main: #5C4033;
             --accent: #FF8A00;
         }
 
-        /* 階段背景切換 */
+        /* 三階段統一採用藍紫色系，由深夜逐步轉為冰藍晨光 */
         body.stage-1 {
-            --bg-top: #0F2027;    /* 階段一：神祕夜空 */
-            --bg-bottom: #203A43;
-            --mountain-back: #1F3038;
-            --mountain-front: #0D161A;
+            --bg-top: #171B46;
+            --bg-mid: #23265D;
+            --bg-bottom: #312E73;
+            --glow-color: rgba(116, 105, 210, 0.22);
+            --mountain-back: #292B66;
+            --mountain-front: #11172F;
         }
+
         body.stage-2 {
-            --bg-top: #2B1B54;    /* 階段二：夜間營火 */
-            --bg-bottom: #EE7752;
-            --mountain-back: #4A3A75;
-            --mountain-front: #2D204F;
+            --bg-top: #514A9A;
+            --bg-mid: #7771C8;
+            --bg-bottom: #8C8BD4;
+            --glow-color: rgba(220, 216, 255, 0.42);
+            --mountain-back: #6864AC;
+            --mountain-front: #403875;
         }
+
         body.stage-3 {
-            --bg-top: #FF9A9E;    /* 階段三：破曉迎來溫慢破曉夕陽 */
-            --bg-bottom: #FECFEF;
-            --mountain-back: #FFB3A7;
-            --mountain-front: #E88C7D;
+            --bg-top: #C8D7FF;
+            --bg-mid: #DDD8FF;
+            --bg-bottom: #EEF3FF;
+            --glow-color: rgba(255, 255, 255, 0.82);
+            --mountain-back: #C3C6EC;
+            --mountain-front: #AAA7DA;
         }
 
         * {
@@ -49,7 +59,9 @@
             overflow: hidden;
             font-family: 'Nunito', '微軟正黑體', sans-serif;
             color: var(--text-main);
-            background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+            background:
+                radial-gradient(circle at 52% 16%, var(--glow-color) 0%, transparent 48%),
+                linear-gradient(to bottom, var(--bg-top) 0%, var(--bg-mid) 55%, var(--bg-bottom) 100%);
             transition: background 1.5s ease-in-out;
             display: flex;
             align-items: center;
@@ -67,8 +79,12 @@
             position: absolute;
             bottom: -10%;
             border-radius: 50%;
-            transition: background 1.5s ease;
+            transition: background 1.5s ease, opacity 1.5s ease, filter 1.5s ease;
         }
+
+        body.stage-1 .mountain { opacity: 0.88; }
+        body.stage-2 .mountain { opacity: 0.66; }
+        body.stage-3 .mountain { opacity: 0.42; }
         .m-back {
             width: 120vw; height: 60vh; left: -10vw;
             background: var(--mountain-back);
