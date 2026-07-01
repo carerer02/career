@@ -561,7 +561,7 @@
         <div class="left-panel" id="mobileLeftPanel">
             <div class="wallet-group">
                 <div class="wallet">
-                    <div>🪙 累積競賽獎金：<span id="money">0</span> 元</div>
+                    <div>🪙 競賽獎金：<span id="money">0</span> 元</div>
                     <div>🃏 7-11商品卡：<span id="giftcard">0</span> 元</div>
                 </div>
                 <button class="chest-btn" onclick="openChest()">🎒 點開引路背包 (檢視道具)</button>
@@ -644,7 +644,7 @@
                         id: "s2_t1",
                         menuText: "🏆 角逐優選作品", 
                         modalTitle: "🌟 複選榮耀", 
-                        modalBody: "初選前50%作品進入複選階段，複選將精選出優秀作品。<br><b>優選</b>可獲得獎金新臺幣2,000元！<br><b>佳作</b>可獲獎金新臺幣1,000元！<br><br>獲優選者，將解鎖出席總決賽現場簡報的終極任務。"
+                        modalBody: "初選前50%作品進入複選階段，複選將精選出優秀作品。<br><b>優選</b>可獲得獎金新臺幣2,000元！<br><b>佳作</b>可獲得獎金新臺幣1,000元！<br><br>獲優選者，將解鎖出席總決賽現場簡報的終極任務。"
                     },
                     { 
                         id: "s2_t2",
@@ -658,7 +658,7 @@
                 title: "關卡三：總決賽巔峰對決",
                 desc: "115年11月20日總決賽暨頒頒獎典禮現場！在評審與觀眾面前展現最強的一面！",
                 rewardType: "money",
-                rewardValue: 7000,
+                rewardValue: 5000,
                 nextStageTrigger: "🚀 查看完整公告",
                 tasks: [
                     { 
@@ -920,7 +920,7 @@
 
                 if (currentStage === 2) {
                     if (stageRewardsGranted[2]) {
-                        totalMoney -= 7000;
+                        totalMoney -= 5000;
                         stageRewardsGranted[2] = false;
                     }
                 } else if (currentStage === 1) {
