@@ -373,6 +373,14 @@
             cursor: pointer;
             box-shadow: 0 5px 0 #D84315;
         }
+        /* 🌟 貼上以下這段新樣式，設定字體比框格小 1/3 (約 0.7rem) 與天邊距 */
+        .modal-notice {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 15px;
+            text-align: center;
+            line-height: 1.4;
+        }
 
         /* 飛行的光球 */
         .flying-orb {
@@ -592,6 +600,7 @@
             <div class="modal-title" id="modalTitle">任務說明</div>
             <div class="modal-body" id="modalBody">內容載入中...</div>
             <button class="modal-btn" onclick="closeModal()">收進背包</button>
+            <div class="modal-notice">參賽資格及投稿相關規定，以官方公告與競賽簡章為準。</div>
         </div>
     </div>
 
